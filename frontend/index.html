@@ -204,7 +204,7 @@
       </div>
       <div style="text-align:right">
         <div class="muted">题 <span id="curIdx">1</span> / 90</div>
-        <div class="muted small">进度：<span id="percent">0%</span></div>
+        <!--<div class="muted small">进度：<span id="percent">0%</span></div>-->
       </div>
     </div>
   </div>
@@ -236,6 +236,7 @@
    每题为字符串，选项统一：A(1), B(2), C(3), D(4), E(5)
 */
 let QUESTIONS = [];
+let FACTORS = [];
 
 // 初始化加载题库
 async function loadQuestions() {
@@ -243,6 +244,7 @@ async function loadQuestions() {
     const res = await fetch("/api/questions");
     const data = await res.json();
     QUESTIONS = data.questions;
+    FACTORS = data.factors;
     // 开始渲染第一题
     renderQuestion(0);
   } catch (e) {
@@ -356,6 +358,17 @@ function goPrev(){
   if(idx>0){ idx--; renderQuestion(idx); }
 }
 
+function calculateFactorScores(answers){
+  return FACTORS.map(factor=>{
+    const sum = factor.indices.reduce((acc, qNum)=>{
+      const val = answers[qNum-1] ?? 0;
+      return acc + val;
+    },0);
+    return { name: factor.name, score: sum };
+  });
+}
+
+
 function showResult(){
   // 统计总分（未答题按0处理或忽略？这里将未答视为0分）
   const filledAnswers = answers.map(v => v === null ? 0 : v);
@@ -370,11 +383,20 @@ function showResult(){
     lev = RESULT_LEVELS[1];
   }
 
+  const factorScores = calculateFactorScores(filledAnswers);
 
   resultLevel.textContent = lev ? lev.title : '';
   totalScoreEl.textContent = '总分：' + total;
   activeCount.textContent = '阳性项目数：' + highScoreCount;
   resultDesc.textContent = lev ? lev.desc : '';
+
+  let tableHtml = '<table border="1" cellpadding="6" cellspacing="0" style="border-collapse:collapse; width:100%">';
+    tableHtml += '<tr><th>因子</th><th>分数</th></tr>';
+    factorScores.forEach(f=>{
+      tableHtml += `<tr><td>${f.name}</td><td>${f.score}</td></tr>`;
+    });
+    tableHtml += '</table>';
+  
   // 显示结果卡片，隐藏题卡
   resultCard.style.display = 'block';
   document.querySelector('.card').style.display = 'none';
