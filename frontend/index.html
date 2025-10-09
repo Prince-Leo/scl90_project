@@ -1,0 +1,451 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<title>抑郁自测问卷（90题）</title>
+	<style>
+	  /* Reset / 基本样式 */
+	  :root{
+	    --bg:#f7f8fb;
+	    --card:#ffffff;
+	    --primary:#2463ff;
+	    --muted:#6b7280;
+	    --danger:#e02424;
+	    --shadow: 0 6px 18px rgba(33,33,33,0.08);
+	    --radius:14px;
+	    --pad:16px;
+	  }
+	  html,body{
+	  	height:100%;
+	  	margin:0;
+	  	font-family: "Helvetica Neue", Arial, sans-serif;
+	  	background:var(--bg);
+	  	color:#111;
+	  }
+	  .app{
+	  	max-width:780px;
+	  	margin:0 auto;
+	  	padding:12px;
+	  	box-sizing:border-box;
+	  }
+	  .card{
+	  	background:var(--card);
+	  	border-radius:16px;
+	  	padding:18px;
+	  	box-shadow:var(--shadow);
+	  	margin-bottom:12px;
+	  }
+	  header{
+	  	display:flex;
+	  	align-items:center;
+	  	gap:12px;
+	  	margin-bottom:10px;
+	  }
+	  .logo{
+	  	width:46px;
+	  	height:46px;
+	  	border-radius:10px;
+	  	background:linear-gradient(135deg,#2f7bff,#7ac7ff);
+	  	display:flex;
+	  	align-items:center;
+	  	justify-content:center;
+	  	color:#fff;
+	  	font-weight:700;
+	  	font-size:18px;
+	  }
+	  h1{
+	  	font-size:18px;
+	  	margin:0
+	  }
+	  p.lead{
+	  	margin:6px 0 0;
+	  	color:var(--muted);
+	  	font-size:13px;
+	  }
+	  /* 进度条 */
+	  .progress-wrap{
+      height:8px;
+      background:#e6e9ef;
+      border-radius:999px;
+      margin-top:12px;
+      overflow:hidden
+    }
+	  .progress{
+      height:100%;
+      background:linear-gradient(90deg,var(--primary),#7ac7ff);
+      width:0%;
+      transition:width .25s ease
+    }
+
+	  /* 问题主体 */
+	  .question-area{padding:12px 4px;}
+	  .q-title{font-size:16px;font-weight:600;margin-bottom:10px}
+	  .q-sub{color:var(--muted);font-size:13px;margin-bottom:12px}
+
+	  /* 选项 */
+	  .opts{
+      display:flex;
+      flex-direction:column;
+      gap:10px
+    }
+	  .opt{
+      display:flex;
+      align-items:center;
+      gap:12px;
+      padding:12px;
+      border-radius:12px;
+      border:1px solid #eef2ff;
+      cursor:pointer;
+      background:#fbfdff;
+      transition:all .12s ease;
+      position: relative
+    }
+	  .opt input{display:none}
+	  .opt .tag{
+      min-width:38px;
+      height:38px;
+      border-radius:10px;
+      background:#f1f5ff;
+      border:1px solid #e6eeff;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      font-weight:700;
+      color:var(--primary)
+    }
+	  .opt .text{
+      flex:1;
+      font-size:14px;
+      color:#111
+    }
+	  .opt.selected{
+      border-color:var(--primary);
+      box-shadow:0 6px 20px rgba(36,99,255,0.12);
+      background:linear-gradient(180deg,#f6fbff,#fff)
+    }
+    .opt .checkmark{
+      opacity: 0;
+      transform: scale(0.6);
+      transition: all 0.2s ease;
+      font-size: 18px;
+      color: var(--primary);
+      margin-left: auto;
+      user-select: none;
+    }
+    .opt.selected .checkmark {
+      opacity: 1;
+      transform: scale(1);
+    }
+    .opt .checkmark::after {
+      content: "✔";
+    }
+
+	  /* footer 操作 */
+	  .controls{display:flex;gap:8px;justify-content:space-between;align-items:center;margin-top:14px}
+	  .btn{padding:10px 14px;border-radius:12px;border:0;cursor:pointer;font-weight:600}
+	  .btn.ghost{background:transparent;border:1px solid #dbe7ff;color:var(--primary)}
+	  .btn.primary{background:var(--primary);color:#fff;box-shadow:0 8px 22px rgba(36,99,255,0.12)}
+	  .btn.warn{background:var(--danger);color:#fff}
+	  .muted{color:var(--muted);font-size:13px}
+
+	  /* 结果页 */
+	  .result-score{
+      font-size:36px;
+      font-weight:800;
+      color:var(--primary);
+      margin:6px 0
+    }
+	  .result-lev{
+      font-size:16px;
+      font-weight:700;
+      margin-bottom:10px}
+	  .desc{
+      font-size:14px;
+      color:#222;
+      line-height:1.6;
+      white-space:pre-wrap
+    }
+
+	  /* CSV 下载 */
+	  .small{font-size:13px;color:var(--muted)}
+	  footer.small-note{font-size:12px;color:var(--muted);text-align:center;padding:12px}
+
+	  /* 响应式调整 */
+	  @media (max-width:420px){
+	    .app{padding:10px}
+	    .card{padding:14px;border-radius:12px}
+	    .logo{width:44px;height:44px}
+	    h1{font-size:16px}
+		}
+	</style>
+</head>
+<body>
+<div class="app">
+  <div class="card">
+    <header>
+      <div class="logo">S90</div>
+      <div>
+        <h1>抑郁自测（示例问卷 · 90题）</h1>
+        <p class="lead">每题选择最符合你最近两周情况的答案。此问卷仅作自测参考，不能替代专业诊断。</p>
+      </div>
+    </header>
+
+    <div class="progress-wrap" aria-hidden="true"><div id="progress" class="progress"></div></div>
+
+    <div class="question-area" id="questionArea">
+      <!-- 动态插入问题 -->
+    </div>
+
+    <div class="controls">
+      <div>
+        <button id="prevBtn" class="btn ghost" aria-label="上一步">上一步</button>
+        <button id="nextBtn" class="btn primary" aria-label="下一步">下一步</button>
+      </div>
+      <div style="text-align:right">
+        <div class="muted">题 <span id="curIdx">1</span> / 90</div>
+        <div class="muted small">进度：<span id="percent">0%</span></div>
+      </div>
+    </div>
+  </div>
+
+  <div id="resultCard" class="card" style="display:none">
+    <div>
+      <div class="result-lev" id="resultLevel"></div>
+      <div class="result-score" id="totalScore"></div>
+      <div class="result-score" id="activeCount"></div>
+      <div class="desc" id="resultDesc"></div>
+    </div>
+
+    <div style="display:flex;gap:8px;margin-top:12px">
+      <button id="downloadCSV" class="btn ghost">导出为 CSV</button>
+      <button id="restart" class="btn primary">重新作答</button>
+      <button id="copySummary" class="btn">复制结果</button>
+    </div>
+  </div>
+
+  <div class="card small" style="margin-top:8px">
+    <strong>说明：</strong> 本问卷为自测工具。若测评结果提示中/重度抑郁或你有伤害自己/轻生的念头，请立即联系专业人员或紧急救助。
+  </div>
+
+  <footer class="small-note">版本：移动端自测示例 · 90题</footer>
+</div>
+
+<script>
+/* ====== 题库（90题） =======
+   每题为字符串，选项统一：A(1), B(2), C(3), D(4), E(5)
+*/
+let QUESTIONS = [];
+
+// 初始化加载题库
+async function loadQuestions() {
+  try {
+    const res = await fetch("/api/questions");
+    const data = await res.json();
+    QUESTIONS = data.questions;
+    // 开始渲染第一题
+    renderQuestion(0);
+  } catch (e) {
+    alert("题库加载失败，请检查后端是否运行中");
+    console.error(e);
+  }
+}
+
+/* 选项文本（统一） */
+const OPTIONS = [
+  {label:'A',text:'没有',val:1},
+  {label:'B',text:'很轻',val:2},
+  {label:'C',text:'中等',val:3},
+  {label:'D',text:'偏重',val:4},
+  {label:'E',text:'严重',val:5}
+];
+
+/* 结果等级与扩写描述 */
+const RESULT_LEVELS = [
+  {
+    title:"正常",
+    desc:`状态良好`
+  },
+  {
+    title:"阳性",
+    desc:`可能存在某种心理障碍`
+  }
+];
+
+/* ====== 交互逻辑 ====== */
+let answers = new Array(QUESTIONS.length).fill(null); // 存放数值 1-5 或 null
+let idx = 0;
+
+const qArea = document.getElementById('questionArea');
+const progress = document.getElementById('progress');
+const curIdx = document.getElementById('curIdx');
+const percent = document.getElementById('percent');
+const prevBtn = document.getElementById('prevBtn');
+const nextBtn = document.getElementById('nextBtn');
+const resultCard = document.getElementById('resultCard');
+const resultLevel = document.getElementById('resultLevel');
+const totalScoreEl = document.getElementById('totalScore');
+const activeCount = document.getElementById('activeCount');
+const resultDesc = document.getElementById('resultDesc');
+const downloadCSV = document.getElementById('downloadCSV');
+const restartBtn = document.getElementById('restart');
+const copySummary = document.getElementById('copySummary');
+
+function renderQuestion(i){
+  const q = QUESTIONS[i];
+  qArea.innerHTML = '';
+  const title = document.createElement('div');
+  title.className = 'q-title';
+  title.textContent = q;
+  qArea.appendChild(title);
+  const sub = document.createElement('div');
+  sub.className = 'q-sub';
+  sub.textContent = '选择最符合你最近两周情况的答案';
+  qArea.appendChild(sub);
+
+  const optsWrap = document.createElement('div');
+  optsWrap.className = 'opts';
+  OPTIONS.forEach(opt=>{
+    const el = document.createElement('label');
+    el.className = 'opt';
+    el.tabIndex = 0;
+    el.setAttribute('data-val',opt.val);
+    el.innerHTML = `<div class="tag">${opt.label}</div><div class="text">${opt.text}</div><span class="checkmark"></span>`;
+    // 选中效果
+    if (answers[i] === opt.val) el.classList.add('selected');
+    el.onclick = ()=>{
+      answers[i] = opt.val;
+      // 刷新当前选项样式
+      Array.from(optsWrap.children).forEach(ch=>ch.classList.remove('selected'));
+      el.classList.add('selected');
+//      goNext();
+    };
+    el.onkeydown = (e)=>{
+      if(e.key === 'Enter' || e.key === ' '){ el.click(); e.preventDefault(); }
+    }
+    optsWrap.appendChild(el);
+  });
+  qArea.appendChild(optsWrap);
+
+  // 更新进度显示
+  curIdx.textContent = i+1;
+  const pct = Math.round(((i+1)/QUESTIONS.length)*100);
+  percent.textContent = pct + '%';
+  progress.style.width = pct + '%';
+
+  // 控制按钮显示
+  prevBtn.style.display = i===0 ? 'none' : 'inline-block';
+  nextBtn.textContent = (i === QUESTIONS.length-1) ? '完成并提交' : '下一步';
+
+}
+
+function goNext(){
+  // 如果最后一题：提交
+  if (idx === QUESTIONS.length-1){
+    // 如果没有作答提示确认（但不强制）
+    // 直接计算并显示结果
+    showResult();
+    return;
+  }
+  // 如果当前未选择，则默认留空，可提示用户 — 但这次不强制，直接前进
+  idx++;
+  renderQuestion(idx);
+}
+
+function goPrev(){
+  if(idx>0){ idx--; renderQuestion(idx); }
+}
+
+function showResult(){
+  // 统计总分（未答题按0处理或忽略？这里将未答视为0分）
+  const filledAnswers = answers.map(v => v === null ? 0 : v);
+  const total = filledAnswers.reduce((a,b)=>a+b,0);
+  const highScoreCount = filledAnswers.filter(v => v >= 2).length
+  // 找等级
+  let lev = {};
+  if (total < 160 && highScoreCount < 43) {
+    lev = RESULT_LEVELS[0];
+  }
+  else {
+    lev = RESULT_LEVELS[1];
+  }
+
+
+  resultLevel.textContent = lev ? lev.title : '';
+  totalScoreEl.textContent = '总分: ' + total;
+  activeCount.textContent = '阳性项目数: ' + highScoreCount;
+  resultDesc.textContent = lev ? lev.desc : '';
+  // 显示结果卡片，隐藏题卡
+  resultCard.style.display = 'block';
+  document.querySelector('.card').style.display = 'none';
+  // 保存 last result to localStorage（便于导出）
+  window._lastResult = {
+    total, 
+    highScoreCount, 
+    level: lev ? lev.title : '', 
+    desc: lev ? lev.desc : '', 
+    answers: filledAnswers
+  };
+}
+
+function downloadAsCSV(){
+  const r = window._lastResult || {answers: answers.map(v => v===null? '': v)};
+  const rows = [];
+  rows.push(['题号','题目','选项分值']);
+  r.answers.forEach((val,i)=>{
+    rows.push([i+1, QUESTIONS[i], val]);
+  });
+  rows.push([]);
+  rows.push(['总分', r.total ?? (r.answers.reduce((a,b)=>a+(Number(b)||0),0))]);
+  rows.push(['等级', r.level ?? '']);
+  let csv = rows.map(rw => rw.map(cell => `"${String(cell).replace(/"/g,'""')}"`).join(',')).join('\n');
+  const blob = new Blob([csv], {type:'text/csv;charset=utf-8;'});
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url; a.download = '抑郁自测结果.csv';
+  a.click();
+  URL.revokeObjectURL(url);
+}
+
+function restart(){
+  // reset
+  answers = new Array(QUESTIONS.length).fill(null);
+  idx = 0;
+  resultCard.style.display = 'none';
+  document.querySelector('.card').style.display = 'block';
+  renderQuestion(0);
+  window._lastResult = null;
+}
+
+function copyResultSummary(){
+  const r = window._lastResult;
+  if(!r){ alert('请先完成测评并提交结果'); return; }
+  const text = `抑郁自测结果\n总分：${r.total} 分\n等级：${r.level}\n\n${r.desc}`;
+  navigator.clipboard?.writeText(text).then(()=> {
+    alert('结果已复制到剪贴板');
+  }, ()=> alert('复制失败，请手动复制'));
+}
+
+/* 事件绑定 */
+prevBtn.addEventListener('click', goPrev);
+nextBtn.addEventListener('click', goNext);
+downloadCSV.addEventListener('click', downloadAsCSV);
+restartBtn.addEventListener('click', restart);
+copySummary.addEventListener('click', copyResultSummary);
+
+/* 首次渲染 */
+//renderQuestion(0);
+loadQuestions();
+
+/* 可选：支持左右滑动切题（移动端） */
+let touchStartX = 0;
+qArea.addEventListener('touchstart', (e)=> { touchStartX = e.touches[0].clientX; }, {passive:true});
+qArea.addEventListener('touchend', (e)=> {
+  const dx = e.changedTouches[0].clientX - touchStartX;
+  if(Math.abs(dx) > 50){
+    if(dx < 0) goNext(); else goPrev();
+  }
+});
+</script>
+</body>
+</html>

@@ -1,0 +1,29 @@
+# ---- Python ----
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+*.db
+*.sqlite3
+
+# 虚拟环境
+backend/venv/
+backend/.venv/
+
+# 环境配置
+backend/.env
+
+# ---- Node / 前端 ----
+frontend/node_modules/
+frontend/dist/
+frontend/.env
+
+# ---- 系统与编辑器文件 ----
+.DS_Store
+*.log
+.idea/
+.vscode/
+
+# ---- 临时文件 ----
+*.bak
+*.tmp
