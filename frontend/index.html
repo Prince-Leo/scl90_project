@@ -3,7 +3,7 @@
 <head>
 	<meta charset="utf-8">
 	<meta name="viewport" content="width=device-width, initial-scale=1">
-	<title>抑郁自测问卷（90题）</title>
+	<title>SCL-90 症状自测工具</title>
 	<style>
 	  /* Reset / 基本样式 */
 	  :root{
@@ -186,8 +186,8 @@
     <header>
       <div class="logo">S90</div>
       <div>
-        <h1>抑郁自测（示例问卷 · 90题）</h1>
-        <p class="lead">每题选择最符合你最近两周情况的答案。此问卷仅作自测参考，不能替代专业诊断。</p>
+        <h1>SCL-90 症状自评量表</h1>
+        <p class="lead">请根据最近一周的实际感觉，选择最符合自己的选项。</p>
       </div>
     </header>
 
@@ -225,10 +225,10 @@
   </div>
 
   <div class="card small" style="margin-top:8px">
-    <strong>说明：</strong> 本问卷为自测工具。若测评结果提示中/重度抑郁或你有伤害自己/轻生的念头，请立即联系专业人员或紧急救助。
+    <strong>温馨提示：</strong> 本量表仅作为自我评估工具，结果仅供参考，不能替代专业诊断或治疗。如果您在测评过程中或测评结果显示可能存在心理健康问题，请及时寻求医院或专业心理咨询人员的帮助。
   </div>
 
-  <footer class="small-note">版本：移动端自测示例 · 90题</footer>
+  <footer class="small-note">版本：移动端1.0</footer>
 </div>
 
 <script>
@@ -300,7 +300,7 @@ function renderQuestion(i){
   qArea.appendChild(title);
   const sub = document.createElement('div');
   sub.className = 'q-sub';
-  sub.textContent = '选择最符合你最近两周情况的答案';
+  sub.textContent = '选择最符合你最近一周情况的答案';
   qArea.appendChild(sub);
 
   const optsWrap = document.createElement('div');
@@ -372,8 +372,8 @@ function showResult(){
 
 
   resultLevel.textContent = lev ? lev.title : '';
-  totalScoreEl.textContent = '总分: ' + total;
-  activeCount.textContent = '阳性项目数: ' + highScoreCount;
+  totalScoreEl.textContent = '总分：' + total;
+  activeCount.textContent = '阳性项目数：' + highScoreCount;
   resultDesc.textContent = lev ? lev.desc : '';
   // 显示结果卡片，隐藏题卡
   resultCard.style.display = 'block';
@@ -402,7 +402,7 @@ function downloadAsCSV(){
   const blob = new Blob([csv], {type:'text/csv;charset=utf-8;'});
   const url = URL.createObjectURL(blob);
   const a = document.createElement('a');
-  a.href = url; a.download = '抑郁自测结果.csv';
+  a.href = url; a.download = 'SCL-90症状自评结果.csv';
   a.click();
   URL.revokeObjectURL(url);
 }
@@ -420,7 +420,7 @@ function restart(){
 function copyResultSummary(){
   const r = window._lastResult;
   if(!r){ alert('请先完成测评并提交结果'); return; }
-  const text = `抑郁自测结果\n总分：${r.total} 分\n等级：${r.level}\n\n${r.desc}`;
+  const text = `SCL-90症状自评结果\n总分：${r.total} 分\n等级：${r.level}\n\n${r.desc}`;
   navigator.clipboard?.writeText(text).then(()=> {
     alert('结果已复制到剪贴板');
   }, ()=> alert('复制失败，请手动复制'));
