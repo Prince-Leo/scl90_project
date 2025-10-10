@@ -1,5 +1,6 @@
 from fastapi import FastAPI
-from fastapi.middleware.cors import CORSMiddleware
+from pydantic import BaseModel
+from typing import List, Dict
 
 app = FastAPI()
 
@@ -12,118 +13,104 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-# 题库数据
-QUESTIONS = [
-    "头痛",
-    "神经过敏，心中不踏实",
-    "头脑中有不必要的想法或字句盘旋",
-    "头昏或昏倒",
-    "对异性的兴趣减弱",
-    "对旁人责备求全",
-    "感到别人能控制你的思想",
-    "责怪别人制造麻烦",
-    "忘性大",
-    "担心自己的服饰整齐或仪表的端正",
-    "容易烦恼和激动",
-    "胸痛",
-    "害怕空旷的场所或街道",
-    "感到自己的精力下降，活动减弱",
-    "想结束自己的生命",
-    "听到旁人听不到的声音",
-    "发抖",
-    "感到大多数人都不可信任",
-    "胃口不好",
-    "容易哭泣",
-    "同异性相处时感到害羞不自在",
-    "感到受骗，中了圈套或有人想抓住你",
-    "无缘无故地突然感到害怕",
-    "自己不能控制的大发脾气",
-    "怕单独出门",
-    "经常责怪自己",
-    "腰痛",
-    "感到难以完成任务",
-    "感到孤独",
-    "感到苦闷",
-    "过分担忧",
-    "对事物不感兴趣",
-    "感到害怕",
-    "你的感情容易受到伤害",
-    "旁人能知道你的私下的想法",
-    "感到别人不理解你、不同情你",
-    "感到别人对你不友好、不喜欢你",
-    "做事必须做得很慢以保证做得正确",
-    "心跳得很厉害",
-    "恶心或胃部不舒服",
-    "感到比不上他人",
-    "肌肉酸痛",
-    "感到有人在监视你、谈论你",
-    "难以入睡",
-    "做事必须反复检查",
-    "难以做出决定",
-    "怕乘电车、公共汽车、地铁或火车",
-    "呼吸有困难",
-    "一阵阵发冷或发热",
-    "因为感到害怕而避开某些东西、场合或活动",
-    "脑子变空了",
-    "身体发麻或刺痛",
-    "喉咙有梗塞感",
-    "感到前途没有希望",
-    "不能集中注意",
-    "感到身体的某一部分软弱无力",
-    "感到紧张或容易紧张",
-    "感到手或脚发重",
-    "想到死亡的事",
-    "吃得太多",
-    "当别人看着您或谈论您时感到不自在",
-    "有一些不属于您自己的想法",
-    "有想打人或伤害他人的冲动",
-    "早醒",
-    "必须反复洗手、点数",
-    "睡得不稳不深",
-    "有想摔坏或破坏东西的想法",
-    "有一些别人没有的想法",
-    "对别人小心谨慎",
-    "在公共场所感到不自在",
-    "感到任何事情都很困难",
-    "一阵阵恐惧或惊恐",
-    "感到公共场合吃东西很不舒服",
-    "经常与人争论",
-    "单独一人时神经很紧张",
-    "别人对你的成绩没有作出恰当的评价",
-    "即使和别人在一起也感到孤单",
-    "感到坐立不安心神不定",
-    "感到自己没有什么价值",
-    "感到熟悉的东西变成陌生或不像是真的",
-    "大叫或摔东西",
-    "害怕会在公共场合昏倒",
-    "感到别人想占你的便宜",
-    "为一些有关性的想法而很苦恼",
-    "你认为应该因为自己的过错而受到惩罚",
-    "感到要很快把事情做完",
-    "感到自己的身体有严重问题",
-    "从未感到和其他人很亲近",
-    "感到自己有罪",
-    "感到自己的脑子有毛病"
-]
+# 因子对应题号
+FACTOR_ITEMS = {
+    "somatization": [1,4,12,27,40,42,48,49,52,53,56,58],
+    "obsessive": [3,9,10,28,38,45,46,51,55,65],
+    "interpersonal": [6,21,34,36,37,41,61,69,73],
+    "depression": [5,14,15,20,22,26,29,30,31,32,54,71,79],
+    "anxiety": [2,17,23,33,39,57,72,78,80,86],
+    "hostility": [11,24,63,67,74,81],
+    "phobic": [13,25,47,50,70,75,82],
+    "paranoid": [8,18,43,68,76,83],
+    "psychoticism": [7,16,35,62,77,84,85,87,88,90],
+    "other": [19,44,59,60,64,66,89]
+}
 
-# 因子题号（1起始）
-FACTORS = [
-    {"name":"躯体化","indices":[1,4,12,27,40,42,48,49,52,53,56,58]},
-    {"name":"强迫症状","indices":[3,9,10,28,38,45,46,51,55,65]},
-    {"name":"人际关系敏感","indices":[6,21,34,36,37,41,61,69,73]},
-    {"name":"抑郁","indices":[5,14,15,20,22,26,29,30,31,32,54,71,79]},
-    {"name":"焦虑","indices":[2,17,23,33,39,57,72,78,80,86]},
-    {"name":"敌对","indices":[11,24,63,67,74,81]},
-    {"name":"恐怖","indices":[13,25,47,50,70,75,82]},
-    {"name":"偏执","indices":[8,18,43,68,76,83]},
-    {"name":"精神病性","indices":[7,16,35,62,77,84,85,87,88,90]},
-    {"name":"其他","indices":[19,44,59,60,64,66,89]}
-]
+# 请求模型
+class AnswerItem(BaseModel):
+    idx: int
+    var: int
 
-@app.get("/api/questions")
-async def get_questions():
-    return {"questions": QUESTIONS}
+class Answers(BaseModel):
+    answers: List[AnswerItem]
 
-@app.get("/api/factors")
-async def get_factors():
-    return {"factors": FACTORS}
+# 工具函数：计算因子分数与阳性
+def calculate_factors(answer_dict: Dict[int,int]):
+    factor_scores = {}
+    factor_positive_counts = {}
+    factor_flags = {}
+
+    for factor, items in FACTOR_ITEMS.items():
+        scores = [answer_dict.get(i, 0) for i in items]
+        avg_score = sum(scores) / len(items)
+        positive_count = sum(1 for s in scores if s >= 2)
+        # 因子阳性：平均分>2 或阳性项目数>2
+        is_positive = avg_score > 2 or positive_count > 2
+
+        factor_scores[factor] = avg_score
+        factor_positive_counts[factor] = positive_count
+        factor_flags[factor] = is_positive
+
+    return factor_scores, factor_positive_counts, factor_flags
+
+# 工具函数：生成文字说明
+def generate_report(total_score, total_positive, factor_scores, factor_positive_counts, factor_flags):
+    report = []
+
+    # 总分和整体阳性项目
+    report.append(f"总分：{total_score} 分")
+    if total_score > 160 or total_positive > 43:
+        report.append(f"提示：整体心理负担较重（总阳性项目数 {total_positive} 项）")
+    else:
+        report.append("整体心理状态良好，无明显心理问题")
+
+    # 各因子说明
+    for factor in FACTOR_ITEMS.keys():
+        avg = factor_scores[factor]
+        pos_count = factor_positive_counts[factor]
+        flag = factor_flags[factor]
+        status = "阳性" if flag else "正常"
+        description = ""
+        if factor == "somatization":
+            description = "反映身体不适，如头痛、肌肉酸痛、心慌等。"
+        elif factor == "obsessive":
+            description = "包含反复思虑、检查、刻板行为等症状。"
+        elif factor == "interpersonal":
+            description = "在社交中产生不自在、自卑或被排斥感。"
+        elif factor == "depression":
+            description = "反映情绪低落、兴趣减退、自责等。"
+        elif factor == "anxiety":
+            description = "表现为紧张、恐惧、心慌等焦虑症状。"
+        elif factor == "hostility":
+            description = "包含愤怒、易激惹等表现。"
+        elif factor == "phobic":
+            description = "对特定情境或对象的恐惧。"
+        elif factor == "paranoid":
+            description = "表现为多疑、被害感等。"
+        elif factor == "psychoticism":
+            description = "包含孤僻、思维混乱、幻觉等精神病性症状。"
+        elif factor == "other":
+            description = "睡眠、饮食异常等生理功能问题。"
+
+        report.append(f"{factor.capitalize()}：平均分 {avg:.2f}，阳性项目数 {pos_count}，判定 {status}。{description}")
+
+    return "\n".join(report)
+
+# FastAPI 路由
+@app.post("/scl90/report")
+def scl90_report(data: Answers):
+    # 转换为题号→分数字典
+    answer_dict = {item.idx: item.var for item in data.answers}
+
+    # 计算总分与整体阳性项目数
+    total_score = sum(answer_dict.values())
+    total_positive = sum(1 for v in answer_dict.values() if v >= 2)
+
+    # 计算因子
+    factor_scores, factor_positive_counts, factor_flags = calculate_factors(answer_dict)
+
+    # 生成文字报告
+    report = generate_report(total_score, total_positive, factor_scores, factor_positive_counts, factor_flags)
+
+    return {"report": report}
