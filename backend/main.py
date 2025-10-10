@@ -125,5 +125,5 @@ async def get_questions():
     return {"questions": QUESTIONS}
 
 @app.get("/api/factors")
-async def get_questions():
+async def get_factors():
     return {"factors": FACTORS}
