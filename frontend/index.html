@@ -167,10 +167,6 @@
       white-space:pre-wrap
     }
 
-	  /* CSV 下载 */
-	  .small{font-size:13px;color:var(--muted)}
-	  footer.small-note{font-size:12px;color:var(--muted);text-align:center;padding:12px}
-
 	  /* 响应式调整 */
 	  @media (max-width:420px){
 	    .app{padding:10px}
@@ -210,17 +206,9 @@
   </div>
 
   <div id="resultCard" class="card" style="display:none">
-    <div>
-      <div class="result-lev" id="resultLevel"></div>
-      <div class="result-score" id="totalScore"></div>
-      <div class="result-score" id="activeCount"></div>
-      <div class="desc" id="resultDesc"></div>
-    </div>
-
+    <div class="desc" id="resultDesc"></div>
     <div style="display:flex;gap:8px;margin-top:12px">
-      <button id="downloadCSV" class="btn ghost">导出为 CSV</button>
       <button id="restart" class="btn primary">重新作答</button>
-      <button id="copySummary" class="btn">复制结果</button>
     </div>
   </div>
 
@@ -360,13 +348,8 @@ const percent = document.getElementById('percent');
 const prevBtn = document.getElementById('prevBtn');
 const nextBtn = document.getElementById('nextBtn');
 const resultCard = document.getElementById('resultCard');
-const resultLevel = document.getElementById('resultLevel');
-const totalScoreEl = document.getElementById('totalScore');
-const activeCount = document.getElementById('activeCount');
 const resultDesc = document.getElementById('resultDesc');
-const downloadCSV = document.getElementById('downloadCSV');
 const restartBtn = document.getElementById('restart');
-const copySummary = document.getElementById('copySummary');
 
 function renderQuestion(i){
   const q = QUESTIONS[i];
@@ -450,30 +433,18 @@ function showResult(){
   })
     .then(res => res.json())
     .then(data => {
-      console.log("测评报告：", data.report);
+      // 显示结果卡
+      document.querySelector('.card').style.display = 'none';
+      resultCard.style.display = 'block';
+
+      // 显示报告内容
+      //console.log("测评报告：", data.report);
+      resultDesc.textContent = data.report;
     })
     .catch(err => console.error(err));
 
 }
 
-function downloadAsCSV(){
-  const r = window._lastResult || {answers: answers.map(v => v===null? '': v)};
-  const rows = [];
-  rows.push(['题号','题目','选项分值']);
-  r.answers.forEach((val,i)=>{
-    rows.push([i+1, QUESTIONS[i], val]);
-  });
-  rows.push([]);
-  rows.push(['总分', r.total ?? (r.answers.reduce((a,b)=>a+(Number(b)||0),0))]);
-  rows.push(['等级', r.level ?? '']);
-  let csv = rows.map(rw => rw.map(cell => `"${String(cell).replace(/"/g,'""')}"`).join(',')).join('\n');
-  const blob = new Blob([csv], {type:'text/csv;charset=utf-8;'});
-  const url = URL.createObjectURL(blob);
-  const a = document.createElement('a');
-  a.href = url; a.download = 'SCL-90症状自评结果.csv';
-  a.click();
-  URL.revokeObjectURL(url);
-}
 
 function restart(){
   // reset
@@ -485,21 +456,10 @@ function restart(){
   window._lastResult = null;
 }
 
-function copyResultSummary(){
-  const r = window._lastResult;
-  if(!r){ alert('请先完成测评并提交结果'); return; }
-  const text = `SCL-90症状自评结果\n总分：${r.total} 分\n等级：${r.level}\n\n${r.desc}`;
-  navigator.clipboard?.writeText(text).then(()=> {
-    alert('结果已复制到剪贴板');
-  }, ()=> alert('复制失败，请手动复制'));
-}
-
 /* 事件绑定 */
 prevBtn.addEventListener('click', goPrev);
 nextBtn.addEventListener('click', goNext);
-downloadCSV.addEventListener('click', downloadAsCSV);
 restartBtn.addEventListener('click', restart);
-copySummary.addEventListener('click', copyResultSummary);
 
 /* 首次渲染 */
 renderQuestion(0);
