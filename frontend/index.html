@@ -244,11 +244,24 @@ async function loadQuestions() {
     const res = await fetch("/api/questions");
     const data = await res.json();
     QUESTIONS = data.questions;
-    FACTORS = data.factors;
+    
     // 开始渲染第一题
     renderQuestion(0);
   } catch (e) {
     alert("题库加载失败，请检查后端是否运行中");
+    console.error(e);
+  }
+}
+
+// 初始化加载因子
+async function loadFactors() {
+  try {
+    const res = await fetch("/api/factors");
+    const data = await res.json();
+    FACTORS = data.factors;
+    
+  } catch (e) {
+    alert("因子加载失败，请检查后端是否运行中");
     console.error(e);
   }
 }

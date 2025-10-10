@@ -122,4 +122,8 @@ FACTORS = [
 
 @app.get("/api/questions")
 async def get_questions():
-    return {"questions": QUESTIONS, "factors": FACTORS}
+    return {"questions": QUESTIONS}
+
+@app.get("/api/factors")
+async def get_questions():
+    return {"factors": FACTORS}
