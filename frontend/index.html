@@ -243,8 +243,8 @@ async function loadQuestions() {
   try {
     const res = await fetch("/api/questions");
     const data = await res.json();
-    QUESTIONS = data.questions;
-
+//    QUESTIONS = data.questions;
+    QUESTIONS = Array.isArray(data) ? data : data.questions;
     // 开始渲染第一题
     renderQuestion(0);
   } catch (e) {

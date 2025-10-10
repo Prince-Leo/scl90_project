@@ -6,7 +6,7 @@ app = FastAPI()
 # 允许跨域请求（前端 index.html 调用）
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["survey.jakestar.cloud"],  # 生产环境建议指定你的域名
+    allow_origins=["https://survey.jakestar.cloud"],  # 生产环境建议指定你的域名
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
