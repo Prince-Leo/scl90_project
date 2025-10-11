@@ -442,14 +442,11 @@
 		}
 
 		function goNext(){
-			const warnBox = document.querySelector('#warnBox');
 			if (answers[idx] === null) {
-				warnBox.textContent = '⚠️ 请选择一个选项再继续';
+				alert('请选择一个选项后再继续。');
 				return;
-			} else {
-				warnBox.textContent = '';
 			}
-			
+
 			// 如果最后一题：提交
 			if (idx === QUESTIONS.length-1){
 				showResult();
