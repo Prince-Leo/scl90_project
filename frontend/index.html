@@ -442,14 +442,20 @@
 		}
 
 		function goNext(){
+			const warnBox = document.querySelector('#warnBox');
+			if (answers[idx] === null) {
+				warnBox.textContent = '⚠️ 请选择一个选项再继续';
+				return;
+			} else {
+				warnBox.textContent = '';
+			}
+			
 			// 如果最后一题：提交
 			if (idx === QUESTIONS.length-1){
-				// 如果没有作答提示确认（但不强制）
-				// 直接计算并显示结果
 				showResult();
 				return;
 			}
-			// 如果当前未选择，则默认留空，可提示用户 — 但这次不强制，直接前进
+			
 			idx++;
 			renderQuestion(idx);
 		}
