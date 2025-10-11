@@ -484,7 +484,7 @@
 			})
 			.then(res => res.json())
 			.then(data => {
-			  console.log(data.summary);
+			  alert(data.summary);
 			  // data.factors 包含每个因子的详细信息
 			});
 			const total = filledAnswers.reduce((a,b)=>a+b,0);
