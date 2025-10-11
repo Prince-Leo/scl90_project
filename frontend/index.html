@@ -179,6 +179,13 @@
     		color:var(--muted);
     		font-size:13px;
     	}
+    	.warn-box{
+			color: var(--danger);
+			font-size: 13px;
+			margin-top: 6px;
+			min-height: 18px;
+			text-align: left;
+		}
 		.result-score{
     		font-size:36px;
     		font-weight:800;
@@ -246,6 +253,8 @@
 					</div>
 				</div>
 			</div>
+
+			<div id="warnBox" class="warn-box"></div>
 		</div>
 
 		<div id="resultCard" class="card" style="display:none">
@@ -442,9 +451,13 @@
 		}
 
 		function goNext(){
+			const warnBox = document.getElementById('warnBox');
+
 			if (answers[idx] === null) {
-				alert('请选择一个选项后再继续。');
+				warnBox.textContent = '⚠️ 请选择一个选项后再继续';
 				return;
+			} else {
+				warnBox.textContent = ''; // 清空警告
 			}
 
 			// 如果最后一题：提交
