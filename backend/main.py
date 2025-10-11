@@ -1,117 +1,99 @@
-from fastapi import FastAPI
+from fastapi import FastAPI, Request
 from fastapi.middleware.cors import CORSMiddleware
-from pydantic import BaseModel
-from typing import List, Dict
 
 app = FastAPI()
 
-# 允许跨域请求（前端 index.html 调用）
+# 允许跨域访问（前端可以直接请求）
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["https://survey.jakestar.cloud"],  # 生产环境建议指定你的域名
+    allow_origins=["survey.jakestar.cloud"],  # 生产环境建议改为具体域名
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
 )
 
-# 因子对应题号
-FACTOR_ITEMS = {
-    "somatization": [1,4,12,27,40,42,48,49,52,53,56,58],
-    "obsessive": [3,9,10,28,38,45,46,51,55,65],
-    "interpersonal": [6,21,34,36,37,41,61,69,73],
-    "depression": [5,14,15,20,22,26,29,30,31,32,54,71,79],
-    "anxiety": [2,17,23,33,39,57,72,78,80,86],
-    "hostility": [11,24,63,67,74,81],
-    "phobic": [13,25,47,50,70,75,82],
-    "paranoid": [8,18,43,68,76,83],
-    "psychoticism": [7,16,35,62,77,84,85,87,88,90],
-    "other": [19,44,59,60,64,66,89]
+# 各因子题号（从1开始计数）
+FACTORS = {
+    "躯体化": [1,4,12,27,40,42,48,49,52,53,56,58],
+    "强迫症状": [3,9,10,28,38,45,46,51,55,65],
+    "人际关系敏感": [6,21,34,36,37,41,61,69,73],
+    "抑郁": [5,14,15,20,22,26,29,30,31,32,54,71,79],
+    "焦虑": [2,17,23,33,39,57,72,78,80,86],
+    "敌对": [11,24,63,67,74,81],
+    "恐怖": [13,25,47,50,70,75,82],
+    "偏执": [8,18,43,68,76,83],
+    "精神病性": [7,16,35,62,77,84,85,87,88,90],
+    "其他": [19,44,59,60,64,66,89],
 }
 
-# 请求模型
-class AnswerItem(BaseModel):
-    idx: int
-    var: int
+@app.post("/scl90")
+async def scl90_result(request: Request):
+    data = await request.json()
+    answers = data.get("filledAnswers", [])
 
-class Answers(BaseModel):
-    answers: List[AnswerItem]
+    if len(answers) != 90:
+        return {"error": "答案数量必须为90项"}
 
-# 工具函数：计算因子分数与阳性
-def calculate_factors(answer_dict: Dict[int,int]):
-    factor_scores = {}
-    factor_positive_counts = {}
-    factor_flags = {}
+    # 1️⃣ 计算总分与阳性项目数
+    total_score = sum(answers)
+    positive_count = sum(1 for x in answers if x >= 2)
 
-    for factor, items in FACTOR_ITEMS.items():
-        scores = [answer_dict.get(i, 0) for i in items]
-        avg_score = sum(scores) / len(items)
-        positive_count = sum(1 for s in scores if s >= 2)
-        # 因子阳性：平均分>2 或阳性项目数>2
-        is_positive = avg_score > 2 or positive_count > 2
+    # 2️⃣ 各因子统计
+    factor_results = {}
+    for name, idxs in FACTORS.items():
+        vals = [answers[i-1] for i in idxs]  # 转为0基索引
+        avg = round(sum(vals) / len(vals), 2)
+        pos = sum(1 for v in vals if v >= 2)
+        flag = "阳性" if (avg > 2 or pos > 2) else "正常"
+        factor_results[name] = {
+            "平均分": avg,
+            "阳性项目数": pos,
+            "判定": flag,
+        }
 
-        factor_scores[factor] = avg_score
-        factor_positive_counts[factor] = positive_count
-        factor_flags[factor] = is_positive
+    # 3️⃣ 总体判定
+    overall_flag = "阳性" if (total_score > 160 or positive_count > 43) else "正常"
 
-    return factor_scores, factor_positive_counts, factor_flags
+# 4️⃣ 生成文字描述
+summary = f"""
+==============================
+🧠 SCL-90 量表测评结果报告
+==============================
 
-# 工具函数：生成文字说明
-def generate_report(total_score, total_positive, factor_scores, factor_positive_counts, factor_flags):
-    report = []
+【总体情况】
+- 总分：{total_score} 分（{'阳性' if total_score > 160 else '正常'}）
+- 阳性项目数：{positive_count} 项（{'阳性' if positive_count > 43 else '正常'}）
+- 整体结论：{overall_flag}
 
-    # 总分和整体阳性项目
-    report.append(f"总分：{total_score} 分")
-    if total_score > 160 or total_positive > 43:
-        report.append(f"提示：整体心理负担较重（总阳性项目数 {total_positive} 项）")
-    else:
-        report.append("整体心理状态良好，无明显心理问题")
+--------------------------------
+【各因子分析】
+""" + "\n".join([
+    f"- {k}：平均分 {v['平均分']}，阳性项目 {v['阳性项目数']} 项，判定：{v['判定']}"
+    for k, v in factor_results.items()
+]) + """
 
-    # 各因子说明
-    for factor in FACTOR_ITEMS.keys():
-        avg = factor_scores[factor]
-        pos_count = factor_positive_counts[factor]
-        flag = factor_flags[factor]
-        status = "阳性" if flag else "正常"
-        description = ""
-        if factor == "somatization":
-            description = "反映身体不适，如头痛、肌肉酸痛、心慌等。"
-        elif factor == "obsessive":
-            description = "包含反复思虑、检查、刻板行为等症状。"
-        elif factor == "interpersonal":
-            description = "在社交中产生不自在、自卑或被排斥感。"
-        elif factor == "depression":
-            description = "反映情绪低落、兴趣减退、自责等。"
-        elif factor == "anxiety":
-            description = "表现为紧张、恐惧、心慌等焦虑症状。"
-        elif factor == "hostility":
-            description = "包含愤怒、易激惹等表现。"
-        elif factor == "phobic":
-            description = "对特定情境或对象的恐惧。"
-        elif factor == "paranoid":
-            description = "表现为多疑、被害感等。"
-        elif factor == "psychoticism":
-            description = "包含孤僻、思维混乱、幻觉等精神病性症状。"
-        elif factor == "other":
-            description = "睡眠、饮食异常等生理功能问题。"
+--------------------------------
+【结果说明】
+1️⃣ 总体判定依据：
+   - 总分 > 160 分，或阳性项目数 > 43 项 → 可能存在总体心理问题；
+   - 若满足任一条件，则建议进一步心理评估。
 
-        report.append(f"{factor.capitalize()}：平均分 {avg:.2f}，阳性项目数 {pos_count}，判定 {status}。{description}")
+2️⃣ 因子阳性判定依据：
+   - 因子平均分 > 2 分，或该因子内阳性项目数 > 2 项 → 视为该因子阳性；
+   - 因子阳性说明该维度存在一定心理压力或障碍倾向。
 
-    return "\n".join(report)
+3️⃣ 结果解读提示：
+   - 若多个因子阳性，说明心理问题可能涉及多个方面；
+   - 若单一因子阳性，可针对该领域（如焦虑、抑郁等）进行重点关注；
+   - 本结果仅供自测参考，若症状持续或影响日常生活，请寻求专业心理咨询或临床帮助。
+"""
 
-# FastAPI 路由
-@app.post("/scl90/report")
-def scl90_report(data: Answers):
-    # 转换为题号→分数字典
-    answer_dict = {item.idx: item.var for item in data.answers}
 
-    # 计算总分与整体阳性项目数
-    total_score = sum(answer_dict.values())
-    total_positive = sum(1 for v in answer_dict.values() if v >= 2)
 
-    # 计算因子
-    factor_scores, factor_positive_counts, factor_flags = calculate_factors(answer_dict)
-
-    # 生成文字报告
-    report = generate_report(total_score, total_positive, factor_scores, factor_positive_counts, factor_flags)
-
-    return {"report": report}
+    return {
+        "total_score": total_score,
+        "positive_count": positive_count,
+        "overall_flag": overall_flag,
+        "factors": factor_results,
+        "summary": summary.strip()
+    }

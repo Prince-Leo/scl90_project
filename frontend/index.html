@@ -454,7 +454,7 @@
 			const warnBox = document.getElementById('warnBox');
 
 			if (answers[idx] === null) {
-				warnBox.textContent = '⚠️ 请选择一个选项后再继续';
+				warnBox.textContent = '请选择一个选项后再继续';
 				return;
 			} else {
 				warnBox.textContent = ''; // 清空警告
@@ -477,6 +477,16 @@
 		function showResult(){
 			// 统计总分（未答题按0处理或忽略？这里将未答视为0分）
 			const filledAnswers = answers.map(v => v === null ? 0 : v);
+			fetch("/scl90", {
+			  method: "POST",
+			  headers: {"Content-Type": "application/json"},
+			  body: JSON.stringify({ filledAnswers })
+			})
+			.then(res => res.json())
+			.then(data => {
+			  console.log(data.summary);
+			  // data.factors 包含每个因子的详细信息
+			});
 			const total = filledAnswers.reduce((a,b)=>a+b,0);
 			const highScoreCount = filledAnswers.filter(v => v >= 2).length // 找等级
 			let lev = {};
