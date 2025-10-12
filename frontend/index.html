@@ -248,6 +248,9 @@
 
 		<div id="resultCard" class="card" style="display:none">
 			<div>
+				<div id="loadingBarContainer" style="display:none; width:80%; height:8px; background:#eee; border-radius:4px; margin:10px auto;">
+				  <div id="loadingBar" style="width:0%; height:100%; background:#2463ff; border-radius:4px; transition:width 0.3s;"></div>
+				</div>
     			<div class="desc" id="resultEach"></div>
 			</div>
 
@@ -375,6 +378,9 @@
 		const prevBtn = document.getElementById('prevBtn');
 		const nextBtn = document.getElementById('nextBtn');
 		const resultCard = document.getElementById('resultCard');
+		const loadingBarContainer = document.getElementById("loadingBarContainer");
+		const loadingBar = document.getElementById("loadingBar");
+		const resultEach = document.getElementById("resultEach");
 		const restartBtn = document.getElementById('restart');
 
 		function renderQuestion(i){
@@ -451,25 +457,44 @@
 			if(idx>0){ idx--; renderQuestion(idx); }
 		}
 
-		function showResult(){
-			// 统计总分（未答题按0处理或忽略？这里将未答视为0分）
-			const filledAnswers = answers.map(v => v === null ? 0 : v);
+		function showResult() {
+		  const filledAnswers = answers.map(v => v === null ? 0 : v);
+		  document.querySelector('.card').style.display = 'none';
 
-			fetch("/api/scl90", {
-				method: "POST",
-				headers: {"Content-Type": "application/json"},
-				body: JSON.stringify({ filledAnswers })
-			})
-			.then(res => res.json())
-			.then(data => {
-				document.getElementById("resultEach").textContent = data.summary;
-			})
-			.catch(err => console.error(err));
-			
-			// 显示结果卡片，隐藏题卡
-			resultCard.style.display = 'block';
-			document.querySelector('.card').style.display = 'none';
+		  resultCard.style.display = 'block';
+		  loadingBarContainer.style.display = 'block';
+		  resultEach.textContent = '';
+
+		  // 模拟进度条缓慢增长
+		  let progress = 0;
+		  const interval = setInterval(() => {
+		    progress += Math.random() * 20;
+		    if (progress > 90) progress = 90;
+		    loadingBar.style.width = progress + "%";
+		  }, 300);
+
+		  fetch("/api/scl90", {
+		    method: "POST",
+		    headers: {"Content-Type": "application/json"},
+		    body: JSON.stringify({ filledAnswers })
+		  })
+		  .then(res => res.json())
+		  .then(data => {
+		    clearInterval(interval);
+		    loadingBar.style.width = "100%";
+		    setTimeout(() => {
+		      loadingBarContainer.style.display = "none";
+		      resultEach.textContent = data.summary;
+		    }, 300);
+		  })
+		  .catch(err => {
+		    clearInterval(interval);
+		    loadingBarContainer.style.display = "none";
+		    resultEach.textContent = "加载失败，请重试。";
+		    console.error(err);
+		  });
 		}
+
 
 		function restart(){
 			// reset
