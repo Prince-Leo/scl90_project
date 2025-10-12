@@ -286,22 +286,18 @@
 		let QUESTIONS = [];
 		let OPTIONS = [];
 
-		fetch('/api/questions')
-		    .then(res => res.json())
-		    .then(data => {
-		        QUESTIONS = data.questions;
-		    })
-		    .catch(err => console.error('加载题目失败:', err));
+		Promise.all([
+			fetch('/api/questions').then(res => res.json()),
+			fetch('/api/options').then(res => res.json())
+		]).then(([qData, oData]) => {
+			QUESTIONS = qData.questions;
+			OPTIONS = oData.options;
+		
+			answers = new Array(QUESTIONS.length).fill(null);
+			idx = 0;
 
-		fetch('/api/options')
-		    .then(res => res.json())
-		    .then(data => {
-		        OPTIONS = data.options;
-		    })
-		    .catch(err => console.error('加载选项失败:', err));
-
-		let answers = new Array(QUESTIONS.length).fill(null);
-		let idx = 0;
+			renderQuestion(0);
+		});
 
 		const qArea = document.getElementById('questionArea');
 		const progress = document.getElementById('progress');
@@ -441,8 +437,6 @@
 		prevBtn.addEventListener('click', goPrev);
 		nextBtn.addEventListener('click', goNext);
 		restartBtn.addEventListener('click', restart);
-
-		renderQuestion(0);
 
 		let touchStartX = 0;
 		qArea.addEventListener('touchstart', (e)=> { touchStartX = e.touches[0].clientX; }, {passive:true});

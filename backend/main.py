@@ -116,11 +116,11 @@ OPTIONS = [
 ]
 
 @app.get("/api/questions")
-def get_questions():
+async def get_questions():
     return {"questions": QUESTIONS}
 
 @app.get("/api/options")
-def get_options():
+async def get_options():
     return {"options": OPTIONS}
 
 # 各因子题号（从1开始计数）
