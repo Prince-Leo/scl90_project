@@ -55,6 +55,17 @@ async def scl90_result(request: Request):
     # 3️⃣ 总体判定
     overall_flag = "阳性" if (total_score > 160 or positive_count > 43) else "正常"
 
+    header = "    【各因子分析】\n"
+    lines = []
+
+    # 控制列宽，名称对齐，平均分右对齐
+    for k, v in factor_results.items():
+        lines.append(
+            f"    {k.ljust(8, '　')} 平均分：{str(v['平均分']).ljust(5)}"
+            f"阳性项目：{str(v['阳性项目数']).ljust(3)} 判定：{v['判定']}"
+        )
+
+    
     # 4️⃣ 生成文字描述
     summary = f"""
     ==============================
@@ -67,11 +78,7 @@ async def scl90_result(request: Request):
     - 整体结论：{overall_flag}
 
     --------------------------------
-    【各因子分析】
-    """ + "\n".join([
-        f"- {k}：平均分 {v['平均分']}，阳性项目 {v['阳性项目数']} 项，判定：{v['判定']}"
-        for k, v in factor_results.items()
-    ]) + """
+    {header}{chr(10).join(lines)}
 
     --------------------------------
     【结果说明】
