@@ -43,7 +43,7 @@ async def scl90_result(request: Request):
     positive_count = sum(1 for x in answers if x >= 2)
     positive_flag = '阳性' if positive_count > 43 else '正常'
     avg_score = round(sum(answers) / len(answers), 2)
-    index = min(int((avg_score - 1) / 1 * 4), 3)
+    index = min(int(avg_score - 1), 3)
     level = levels[index]
 
     # 2️⃣ 各因子统计
