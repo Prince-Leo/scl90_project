@@ -263,6 +263,9 @@
     			<div class="result-score" id="totalScore"></div>
     			<div class="result-score" id="activeCount"></div>
     			<div class="desc" id="resultDesc"></div>
+    			<div id="progress" style="width:100%;background:#eee;border-radius:8px;height:20px;margin-bottom:12px;display:none;">
+				  <div id="bar" style="width:0%;height:100%;background:#2463ff;border-radius:8px;"></div>
+				</div>
     			<div class="desc" id="resultEach"></div>
 			</div>
 
@@ -479,9 +482,29 @@
 			if(idx>0){ idx--; renderQuestion(idx); }
 		}
 
+		function showProgress() {
+		  const progress = document.getElementById('progress');
+		  const bar = document.getElementById('bar');
+		  progress.style.display = 'block';
+		  let width = 0;
+		  return new Promise(resolve => {
+		    const interval = setInterval(() => {
+		      width += Math.random()*5; // 模拟增长
+		      if(width>=100) width=100;
+		      bar.style.width = width+'%';
+		      if(width>=100){
+		        clearInterval(interval);
+		        resolve();
+		      }
+		    }, 100);
+		  });
+		}
+
 		function showResult(){
 			// 统计总分（未答题按0处理或忽略？这里将未答视为0分）
 			const filledAnswers = answers.map(v => v === null ? 0 : v);
+			document.getElementById('progress').style.display='block';
+			showProgress(); // 启动模拟进度
 			fetch("/api/scl90", {
 				method: "POST",
 				headers: {"Content-Type": "application/json"},
@@ -489,10 +512,11 @@
 			})
 			.then(res => res.json())
 			.then(data => {
-			  document.getElementById("resultEach").innerHTML = `
-			    <h3>测评结果</h3>
-			    <pre>${data.summary}</pre>
-			  `;
+				document.getElementById("progress").style.display='none';
+				document.getElementById("resultEach").innerHTML = `
+					<h3>测评结果</h3>
+					<pre>${data.summary}</pre>
+				`;
 			})
 			.catch(err => console.error(err));
 			const total = filledAnswers.reduce((a,b)=>a+b,0);
