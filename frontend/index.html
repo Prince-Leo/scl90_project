@@ -548,6 +548,7 @@
 			});
 			rows.push([]);
 			rows.push(['总分', r.total ?? (r.answers.reduce((a,b)=>a+(Number(b)||0),0))]);
+			rows.push(['阳性项目数', r.highScoreCount]);
 			rows.push(['等级', r.level ?? '']);
 			let csv = rows.map(rw => rw.map(cell => `"${String(cell).replace(/"/g,'""')}"`).join(',')).join('\n');
 			const blob = new Blob([csv], {type:'text/csv;charset=utf-8;'});
