@@ -208,6 +208,32 @@
     		line-height:1.6;
     		white-space:pre-wrap;
     	}
+    	.factor-table {
+		    width: 100%;
+		    border-collapse: collapse;
+		    margin-top: 12px;
+		    font-size: 14px;
+		}
+
+		.factor-table th,
+		.factor-table td {
+		    border: 1px solid #ddd;
+		    padding: 8px;
+		    text-align: center;
+		}
+
+		.factor-table th {
+		    background-color: #f5f7fa;
+		    font-weight: 600;
+		}
+
+		.factor-table tbody tr:nth-child(even) {
+		    background-color: #fafafa;
+		}
+
+		.factor-table tbody tr:hover {
+		    background-color: #f1f5ff;
+		}
     	.small{
     		font-size:13px;
     		color:var(--muted);
@@ -274,6 +300,8 @@
     			<div class="desc" id="overallFlag"></div>
     			<div class="desc" id="avgScore"></div>
     			<div class="desc" id="level"></div>
+    			<div class="desc" id="factorAnalysis"></div>
+    			<div id="factorTableContainer"></div>
 			</div>
 
 			<div style="display:flex;gap:8px;margin-top:12px">
@@ -409,6 +437,8 @@
 		const overallFlag = document.getElementById("overallFlag");
 		const avgScore = document.getElementById("avgScore");
 		const level = document.getElementById("level");
+		const factorAnalysis = document.getElementById("factorAnalysis");
+		const container = document.getElementById('factorTableContainer');
 		const restartBtn = document.getElementById('restart');
 
 		function renderQuestion(i){
@@ -485,6 +515,41 @@
 			if(idx>0){ idx--; renderQuestion(idx); }
 		}
 
+		function renderFactorTable(factor_results) {
+		    container.innerHTML = ''; // 清空
+
+		    const table = document.createElement('table');
+		    table.className = 'factor-table';
+
+		    // 表头
+		    const thead = document.createElement('thead');
+		    const headerRow = document.createElement('tr');
+		    ['name', '平均分', '阳性项目数', '判定'].forEach(text => {
+		        const th = document.createElement('th');
+		        th.textContent = text;
+		        headerRow.appendChild(th);
+		    });
+		    thead.appendChild(headerRow);
+		    table.appendChild(thead);
+
+		    // 表体
+		    const tbody = document.createElement('tbody');
+		    for (const name in factor_results) {
+		        const row = document.createElement('tr');
+		        const data = factor_results[name];
+		        [name, data["平均分"], data["阳性项目数"], data["判定"]].forEach(text => {
+		            const td = document.createElement('td');
+		            td.textContent = text;
+		            row.appendChild(td);
+		        });
+		        tbody.appendChild(row);
+		    }
+		    table.appendChild(tbody);
+
+		    container.appendChild(table);
+		}
+
+
 		function showResult() {
 			const filledAnswers = answers.map(v => v === null ? 0 : v);
 			document.querySelector('.card').style.display = 'none';
@@ -515,11 +580,13 @@
 					loadingBar.style.width = "0%";
 					resultEach.textContent = 'SCL-90 量表测评结果报告';
 					overallSituation.textContent = '【总体情况】';
-					totalScore.textContent = '- 总分：' + data.total_score + (data.total_flag);
-					positiveCount.textContent = '- 阳性项目数：' + data.positive_count + (data.positive_flag);
-					overallFlag.textContent = '- 整体结论：' + data.overall_flag;
-					avgScore.textContent = '- 整体平均分：' + data.avg_score;
-					level.textContent = '- 抑郁程度：' + data.level;
+					totalScore.textContent = `- 总分：${data.total_score} (${data.total_flag})`;
+					positiveCount.textContent = `- 阳性项目数：${data.positive_count} (${data.positive_flag})`;
+					overallFlag.textContent = `- 整体结论：${data.overall_flag}`;
+					avgScore.textContent = `- 整体平均分：${data.avg_score}`;
+					level.textContent = `- 抑郁程度：${data.level}`;
+					factorAnalysis.textContent = '【各因子分析】';
+					renderFactorTable(data.factor_results);
 				}, 500);
 			})
 			.catch(err => {
