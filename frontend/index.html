@@ -432,6 +432,10 @@
 		    		// 刷新当前选项样式
 		    		Array.from(optsWrap.children).forEach(ch=>ch.classList.remove('selected'));
 		    		el.classList.add('selected');
+
+		    		// 自动跳到下一题
+				    document.getElementById('warnBox').textContent = '';
+				    setTimeout(goNext, 150); // 延迟150ms，给选中动画一点时间
 		    	};
 				el.onkeydown = (e)=>{
 		    		if(e.key === 'Enter' || e.key === ' '){ el.click(); e.preventDefault(); }
