@@ -263,6 +263,7 @@
     			<div class="result-score" id="totalScore"></div>
     			<div class="result-score" id="activeCount"></div>
     			<div class="desc" id="resultDesc"></div>
+    			<div class="desc" id="resultEach"></div>
 			</div>
 
 			<div style="display:flex;gap:8px;margin-top:12px">
@@ -477,16 +478,19 @@
 		function showResult(){
 			// 统计总分（未答题按0处理或忽略？这里将未答视为0分）
 			const filledAnswers = answers.map(v => v === null ? 0 : v);
-			fetch("/scl90", {
-			  method: "POST",
-			  headers: {"Content-Type": "application/json"},
-			  body: JSON.stringify({ filledAnswers })
+			fetch("/api/scl90", {
+				method: "POST",
+				headers: {"Content-Type": "application/json"},
+				body: JSON.stringify({ filledAnswers })
 			})
 			.then(res => res.json())
 			.then(data => {
-			  alert(data.summary);
-			  // data.factors 包含每个因子的详细信息
-			});
+			  document.getElementById("resultEach").innerHTML = `
+			    <h3>测评结果</h3>
+			    <pre>${data.summary}</pre>
+			  `;
+			})
+			.catch(err => console.error(err));
 			const total = filledAnswers.reduce((a,b)=>a+b,0);
 			const highScoreCount = filledAnswers.filter(v => v >= 2).length // 找等级
 			let lev = {};
