@@ -76,7 +76,7 @@ async def scl90_result(request: Request):
     # 4️⃣ 生成文字描述
     summary = f"""
 =======================
-    SCL-90 量表测评结果报告
+      SCL-90 量表测评结果报告
 =======================
 
 【总体情况】
@@ -110,6 +110,8 @@ async def scl90_result(request: Request):
         "positive_count": positive_count,
         "positive_flag": positive_flag,
         "overall_flag": overall_flag,
+        "avg_score": avg_score,
+        "level":level,
         "factor_results": factor_results,
         "summary": summary.strip()
     })

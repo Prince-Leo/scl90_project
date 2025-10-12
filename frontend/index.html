@@ -268,6 +268,12 @@
 				  <div id="loadingBar" class="loading-bar"></div>
 				</div>
     			<div class="desc" id="resultEach"></div>
+    			<div class="desc" id="overallSituation"></div>
+    			<div class="desc" id="totalScore"></div>
+    			<div class="desc" id="positiveCount"></div>
+    			<div class="desc" id="overallFlag"></div>
+    			<div class="desc" id="avgScore"></div>
+    			<div class="desc" id="level"></div>
 			</div>
 
 			<div style="display:flex;gap:8px;margin-top:12px">
@@ -397,7 +403,12 @@
 		const loadingBarContainer = document.getElementById("loadingBarContainer");
 		const loadingBar = document.getElementById("loadingBar");
 		const resultEach = document.getElementById("resultEach");
-		const restartBtn = document.getElementById('restart');
+		const overallSituation = document.getElementById("overallSituation");
+		const totalScore = document.getElementById("totalScore");
+		const positiveCount = document.getElementById("positiveCount");
+		const overallFlag = document.getElementById("overallFlag");
+		const avgScore = document.getElementById("avgScore");
+		const level = document.getElementById("level");
 
 		function renderQuestion(i){
 			const q = QUESTIONS[i];
@@ -487,7 +498,7 @@
 				progress += Math.random() * 20;
 				if (progress > 90) progress = 90;
 				loadingBar.style.width = progress + "%";
-			}, 300);
+			}, 500);
 
 			fetch("/api/scl90", {
 				method: "POST",
@@ -501,8 +512,14 @@
 				setTimeout(() => {
 					loadingBarContainer.style.display = "none";
 					loadingBar.style.width = "0%";
-					resultEach.textContent = data.summary;
-				}, 300);
+					resultEach.textContent = 'SCL-90 量表测评结果报告';
+					overallSituation.textContent = '【总体情况】';
+					totalScore.textContent = '- 总分：' + data.total_score + (data.total_flag);
+					positiveCount.textContent = '- 阳性项目数：' + data.positive_count + (data.positive_flag);
+					overallFlag.textContent = '- 整体结论：' + data.overall_flag;
+					avgScore.textContent = '- 整体平均分：' + data.avg_score;
+					level.textContent = '- 抑郁程度：' + data.level;
+				}, 500);
 			})
 			.catch(err => {
 				clearInterval(interval);
