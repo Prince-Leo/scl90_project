@@ -27,6 +27,8 @@ FACTORS = {
     "其他": [19,44,59,60,64,66,89],
 }
 
+levels = ["无抑郁", "轻度抑郁", "中度抑郁", "重度抑郁"]
+
 @app.post("/api/scl90")
 async def scl90_result(request: Request):
     data = await request.json()
@@ -35,9 +37,14 @@ async def scl90_result(request: Request):
     if len(answers) != 90:
         return {"error": "答案数量必须为90项"}
 
-    # 1️⃣ 计算总分与阳性项目数
+    # 1️⃣ 计算总分与阳性项目数及等级
     total_score = sum(answers)
+    total_flag = '阳性' if total_score > 160 else '正常'
     positive_count = sum(1 for x in answers if x >= 2)
+    positive_flag = '阳性' if positive_count > 43 else '正常'
+    avg_score = round(sum(answers) / len(answers), 2)
+    index = min(int((avg_score - 1) / 1 * 4), 3)
+    level = levels[index]
 
     # 2️⃣ 各因子统计
     factor_results = {}
@@ -69,13 +76,15 @@ async def scl90_result(request: Request):
     # 4️⃣ 生成文字描述
     summary = f"""
 =======================
-   🧠 SCL-90 量表测评结果报告
+    SCL-90 量表测评结果报告
 =======================
 
 【总体情况】
-- 总分：{total_score} 分（{'阳性' if total_score > 160 else '正常'}）
-- 阳性项目数：{positive_count} 项（{'阳性' if positive_count > 43 else '正常'}）
+- 总分：{total_score} 分（{total_flag}）
+- 阳性项目数：{positive_count} 项（{positive_flag}）
 - 整体结论：{overall_flag}
+- 整体平均分：{avg_score}
+- 抑郁程度：{level}
 
 --------------------------------
 {header}{chr(10).join(lines)}
@@ -93,13 +102,14 @@ async def scl90_result(request: Request):
 3️⃣ 结果解读提示：
    - 若多个因子阳性，说明心理问题可能涉及多个方面；
    - 若单一因子阳性，可针对该领域（如焦虑、抑郁等）进行重点关注；
-   - 本结果仅供自测参考，若症状持续或影响日常生活，请寻求专业心理咨询或临床帮助。
 """
 
     return JSONResponse(content={
         "total_score": total_score,
+        "total_flag": total_flag,
         "positive_count": positive_count,
+        "positive_flag": positive_flag,
         "overall_flag": overall_flag,
-        "factors": factor_results,
+        "factor_results": factor_results,
         "summary": summary.strip()
     })
