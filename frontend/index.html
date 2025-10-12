@@ -458,41 +458,42 @@
 		}
 
 		function showResult() {
-		  const filledAnswers = answers.map(v => v === null ? 0 : v);
-		  document.querySelector('.card').style.display = 'none';
+			const filledAnswers = answers.map(v => v === null ? 0 : v);
+			document.querySelector('.card').style.display = 'none';
 
-		  resultCard.style.display = 'block';
-		  loadingBarContainer.style.display = 'block';
-		  resultEach.textContent = '';
+			resultCard.style.display = 'block';
+			loadingBarContainer.style.display = 'block';
+			resultEach.textContent = '';
 
-		  // 模拟进度条缓慢增长
-		  let progress = 0;
-		  const interval = setInterval(() => {
-		    progress += Math.random() * 20;
-		    if (progress > 90) progress = 90;
-		    loadingBar.style.width = progress + "%";
-		  }, 300);
+			// 模拟进度条缓慢增长
+			let progress = 0;
+			const interval = setInterval(() => {
+				progress += Math.random() * 20;
+				if (progress > 90) progress = 90;
+				loadingBar.style.width = progress + "%";
+			}, 300);
 
-		  fetch("/api/scl90", {
-		    method: "POST",
-		    headers: {"Content-Type": "application/json"},
-		    body: JSON.stringify({ filledAnswers })
-		  })
-		  .then(res => res.json())
-		  .then(data => {
-		    clearInterval(interval);
-		    loadingBar.style.width = "100%";
-		    setTimeout(() => {
-		      loadingBarContainer.style.display = "none";
-		      resultEach.textContent = data.summary;
-		    }, 300);
-		  })
-		  .catch(err => {
-		    clearInterval(interval);
-		    loadingBarContainer.style.display = "none";
-		    resultEach.textContent = "加载失败，请重试。";
-		    console.error(err);
-		  });
+			fetch("/api/scl90", {
+				method: "POST",
+				headers: {"Content-Type": "application/json"},
+				body: JSON.stringify({ filledAnswers })
+			})
+			.then(res => res.json())
+			.then(data => {
+				clearInterval(interval);
+				loadingBar.style.width = "100%";
+				setTimeout(() => {
+					loadingBarContainer.style.display = "none";
+					loadingBar.style.width = "0%";
+					resultEach.textContent = data.summary;
+				}, 300);
+			})
+			.catch(err => {
+				clearInterval(interval);
+				loadingBarContainer.style.display = "none";
+				resultEach.textContent = "加载失败，请重试。";
+				console.error(err);
+			});
 		}
 
 
@@ -503,7 +504,6 @@
 			resultCard.style.display = 'none';
 			document.querySelector('.card').style.display = 'block';
 			renderQuestion(0);
-			window._lastResult = null;
 		}
 
 		prevBtn.addEventListener('click', goPrev);
