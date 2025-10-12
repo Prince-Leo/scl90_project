@@ -1,5 +1,6 @@
 from fastapi import FastAPI, Request
 from fastapi.middleware.cors import CORSMiddleware
+from fastapi.responses import JSONResponse
 
 app = FastAPI()
 
@@ -90,10 +91,10 @@ async def scl90_result(request: Request):
 
 
 
-    return {
+    return JSONResponse(content={
         "total_score": total_score,
         "positive_count": positive_count,
         "overall_flag": overall_flag,
         "factors": factor_results,
         "summary": summary.strip()
-    }
+    })
