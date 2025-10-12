@@ -1,0 +1,256 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<title>SCL-90 症状自测工具</title>
+	<style>
+		/* 基本样式 */
+		:root{
+		    --bg:#f7f8fb;
+		    --card:#ffffff;
+		    --primary:#2463ff;
+		    --muted:#6b7280;
+		    --danger:#e02424;
+		    --shadow: 0 6px 18px rgba(33,33,33,0.08);
+		    --radius:14px;
+		    --pad:16px;
+		}
+	  	html,body{
+	  		height:100%;
+	  		margin:0;
+	  		font-family: "Helvetica Neue", Arial, sans-serif;
+	  		background:var(--bg);
+	  		color:#111;
+	  	}
+		header{
+		  	display:flex;
+		  	align-items:center;
+		  	gap:12px;
+		  	margin-bottom:10px;
+		}
+		h1{
+		  	font-size:18px;
+		  	margin:0;
+		}
+		p.lead{
+		  	margin:6px 0 0;
+		  	color:var(--muted);
+		  	font-size:13px;
+		}
+		.app{
+		  	max-width:780px;
+		  	margin:0 auto;
+		  	padding:12px;
+		  	box-sizing:border-box;
+		}
+		.card{
+		  	background:var(--card);
+		  	border-radius:16px;
+		  	padding:18px;
+		  	box-shadow:var(--shadow);
+		  	margin-bottom:12px;
+		}
+		.logo{
+		  	width:46px;
+		  	height:46px;
+		  	border-radius:10px;
+		  	background:linear-gradient(135deg,#2f7bff,#7ac7ff);
+		  	display:flex;
+		  	align-items:center;
+		  	justify-content:center;
+		  	color:#fff;
+		  	font-weight:700;
+		  	font-size:18px;
+		}
+		.progress-wrap{
+	        height:8px;
+	        background:#e6e9ef;
+	        border-radius:999px;
+	        margin-top:12px;
+	        overflow:hidden;
+	    }
+	    .progress{
+	        height:100%;
+	        background:linear-gradient(90deg,var(--primary),#7ac7ff);
+	        width:0%;
+	        transition:width .25s ease;
+	    }
+	    .question-area{
+	      	padding:12px 4px;
+	    }
+		.q-title{
+		  	font-size:16px;
+		  	font-weight:600;
+		  	margin-bottom:10px;
+		}
+		.q-sub{
+		  	color:var(--muted);
+		  	font-size:13px;
+		  	margin-bottom:12px;
+		}
+		.opts{
+	        display:flex;
+	        flex-direction:column;
+	        gap:10px
+	    }
+	    .opt{
+		    display:flex;
+		    align-items:center;
+		    gap:12px;
+		    padding:12px;
+		    border-radius:12px;
+		    border:1px solid #eef2ff;
+		    cursor:pointer;
+		    background:#fbfdff;
+		    transition:all .12s ease;
+		    position: relative;
+		}
+		.opt input{
+			display:none;
+		}
+		.opt .tag{
+		    min-width:38px;
+		    height:38px;
+		    border-radius:10px;
+		    background:#f1f5ff;
+		    border:1px solid #e6eeff;
+		    display:flex;
+		    align-items:center;
+		    justify-content:center;
+		    font-weight:700;
+		    color:var(--primary);
+		}
+		.opt .text{
+    		flex:1;
+    		font-size:14px;
+    		color:#111;
+    	}
+    	.opt.selected{
+    		border-color:var(--primary);
+    		box-shadow:0 6px 20px rgba(36,99,255,0.12);
+    		background:linear-gradient(180deg,#f6fbff,#fff);
+    	}
+    	.opt .checkmark{
+		    opacity: 0;
+		    transform: scale(0.6);
+		    transition: all 0.2s ease;
+		    font-size: 18px;
+		    color: var(--primary);
+		    margin-left: auto;
+		    user-select: none;
+	    }
+    	.opt.selected .checkmark {
+    		opacity: 1;
+    		transform: scale(1);
+    	}
+    	.opt .checkmark::after {
+    		content: "✔";
+    	}
+    	.controls{
+    		display:flex;
+    		gap:8px;
+    		justify-content:space-between;
+    		align-items:center;
+    		margin-top:14px;
+    	} 
+    	.btn{
+    		padding:10px 14px;
+    		border-radius:12px;
+    		border:0;
+    		cursor:pointer;
+    		font-weight:600;
+    	} 
+    	.btn.ghost{
+    		background:transparent;
+    		border:1px solid #dbe7ff;
+    		color:var(--primary);
+    	} 
+    	.btn.primary{
+    		background:var(--primary);
+    		color:#fff;
+    		box-shadow:0 8px 22px rgba(36,99,255,0.12);
+    	} 
+    	.btn.warn{
+    		background:var(--danger);
+    		color:#fff;
+    	} 
+    	.muted{
+    		color:var(--muted);
+    		font-size:13px;
+    	}
+    	.warn-box{
+			color: var(--danger);
+			font-size: 13px;
+			margin-top: 6px;
+			min-height: 18px;
+			text-align: left;
+		}
+		.result-score{
+    		font-size:36px;
+    		font-weight:800;
+    		color:var(--primary);
+      		margin:6px 0;
+    	}
+		.result-lev{
+    		font-size:16px;
+    		font-weight:700;
+    		margin-bottom:10px;
+    	}
+		.desc{
+    		font-size:14px;
+    		color:#222;
+    		line-height:1.6;
+    		white-space:pre-wrap;
+    	}
+    	.small{
+    		font-size:13px;
+    		color:var(--muted);
+    	}
+    	footer.small-note{
+    		font-size:12px;
+    		color:var(--muted);
+    		text-align:center;
+    		padding:12px;
+    	}
+    	@media (max-width:420px){
+	    	.app{padding:10px}
+	    	.card{padding:14px;border-radius:12px}
+	    	.logo{width:44px;height:44px}
+	    	h1{font-size:16px}
+		}
+	</style>
+</head>
+<body>
+	<div class="app">
+		<div id="resultCard" class="card">
+			<div>HELLO</div>	
+	</div>
+
+	<script>
+		// filledAnswers 示例（共 90 项）
+		const filledAnswers = [
+		  2, 1, 3, 2, 1, 4, 3, 2, 1,  // 1~10题
+		  2, 1, 3, 2, 1, 4, 3, 2, 1,  // 11~20题
+		  2, 1, 3, 2, 1, 4, 3, 2, 1,  // 21~30题
+		  2, 1, 3, 2, 1, 4, 3, 2, 1,  // 31~40题
+		  2, 1, 3, 2, 1, 4, 3, 2, 1,  // 41~50题
+		  2, 1, 3, 2, 1, 4, 3, 2, 1,  // 51~60题
+		  2, 1, 3, 2, 1, 4, 3, 2, 1,  // 61~70题
+		  2, 1, 3, 2, 1, 4, 3, 2, 1,  // 71~80题
+		  2, 1, 3, 2, 1, 4, 3, 2, 1,  // 81~90题
+		];
+
+		fetch("/scl90", {
+			method: "POST",
+			headers: {"Content-Type": "application/json"},
+			body: JSON.stringify({ filledAnswers })
+		})
+		.then(res => res.json())
+		.then(data => {
+			alert(data.summary);
+			// data.factors 包含每个因子的详细信息
+		});
+	</script>
+</body>
+</html>

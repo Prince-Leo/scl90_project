@@ -504,7 +504,7 @@
 			resultCard.style.display = 'block';
 			document.querySelector('.card').style.display = 'none';
 			// 保存 last result to localStorage（便于导出）
-			window._lastResult = {total, level: lev ? lev.title : '', desc: lev ? lev.desc : '', answers: filledAnswers};
+			window._lastResult = {total, highScoreCount, level: lev ? lev.title : '', desc: lev ? lev.desc : '', answers: filledAnswers};
 		}
 
 		function downloadAsCSV(){
