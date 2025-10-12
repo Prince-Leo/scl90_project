@@ -186,17 +186,6 @@
 			min-height: 18px;
 			text-align: left;
 		}
-		.result-score{
-    		font-size:36px;
-    		font-weight:800;
-    		color:var(--primary);
-      		margin:6px 0;
-    	}
-		.result-lev{
-    		font-size:16px;
-    		font-weight:700;
-    		margin-bottom:10px;
-    	}
 		.desc{
     		font-size:14px;
     		color:#222;
@@ -259,20 +248,11 @@
 
 		<div id="resultCard" class="card" style="display:none">
 			<div>
-				<div class="result-lev" id="resultLevel"></div>
-    			<div class="result-score" id="totalScore"></div>
-    			<div class="result-score" id="activeCount"></div>
-    			<div class="desc" id="resultDesc"></div>
-    			<div id="progress" style="width:100%;background:#eee;border-radius:8px;height:20px;margin-bottom:12px;display:none;">
-				  <div id="bar" style="width:0%;height:100%;background:#2463ff;border-radius:8px;"></div>
-				</div>
     			<div class="desc" id="resultEach"></div>
 			</div>
 
 			<div style="display:flex;gap:8px;margin-top:12px">
-      			<button id="downloadCSV" class="btn ghost">导出为 CSV</button>
       			<button id="restart" class="btn primary">重新作答</button>
-      			<button id="copySummary" class="btn">复制结果</button>
     		</div>
 		</div>
 
@@ -385,11 +365,6 @@
 			{label:'E',text:'严重',val:5}
 		];
 
-		const RESULT_LEVELS = [
-			{title:"正常",desc:`状态良好`},
-			{title:"阳性",desc:`可能存在某种心理障碍`}
-		];
-
 		let answers = new Array(QUESTIONS.length).fill(null);
 		let idx = 0;
 
@@ -400,13 +375,7 @@
 		const prevBtn = document.getElementById('prevBtn');
 		const nextBtn = document.getElementById('nextBtn');
 		const resultCard = document.getElementById('resultCard');
-		const resultLevel = document.getElementById('resultLevel');
-		const totalScoreEl = document.getElementById('totalScore');
-		const activeCount = document.getElementById('activeCount');
-		const resultDesc = document.getElementById('resultDesc');
-		const downloadCSV = document.getElementById('downloadCSV');
 		const restartBtn = document.getElementById('restart');
-		const copySummary = document.getElementById('copySummary');
 
 		function renderQuestion(i){
 			const q = QUESTIONS[i];
@@ -482,29 +451,10 @@
 			if(idx>0){ idx--; renderQuestion(idx); }
 		}
 
-		function showProgress() {
-		  const progress = document.getElementById('progress');
-		  const bar = document.getElementById('bar');
-		  progress.style.display = 'block';
-		  let width = 0;
-		  return new Promise(resolve => {
-		    const interval = setInterval(() => {
-		      width += Math.random()*5; // 模拟增长
-		      if(width>=100) width=100;
-		      bar.style.width = width+'%';
-		      if(width>=100){
-		        clearInterval(interval);
-		        resolve();
-		      }
-		    }, 100);
-		  });
-		}
-
 		function showResult(){
 			// 统计总分（未答题按0处理或忽略？这里将未答视为0分）
 			const filledAnswers = answers.map(v => v === null ? 0 : v);
-			document.getElementById('progress').style.display='block';
-			showProgress(); // 启动模拟进度
+
 			fetch("/api/scl90", {
 				method: "POST",
 				headers: {"Content-Type": "application/json"},
@@ -512,50 +462,13 @@
 			})
 			.then(res => res.json())
 			.then(data => {
-				document.getElementById("progress").style.display='none';
-				document.getElementById("resultEach").innerHTML = `
-					<pre>${data.summary}</pre>
-				`;
+				document.getElementById("resultEach").textContent = data.summary;
 			})
 			.catch(err => console.error(err));
-			const total = filledAnswers.reduce((a,b)=>a+b,0);
-			const highScoreCount = filledAnswers.filter(v => v >= 2).length // 找等级
-			let lev = {};
-			if (total < 160 && highScoreCount < 43) { 
-				lev = RESULT_LEVELS[0]; 
-			} 
-			else { 
-				lev = RESULT_LEVELS[1]; 
-			}
-			resultLevel.textContent = lev ? lev.title : '';
-			totalScoreEl.textContent = '总分: ' + total; 
-			activeCount.textContent = '阳性项目数: ' + highScoreCount;
-			resultDesc.textContent = lev ? lev.desc : '';
+			
 			// 显示结果卡片，隐藏题卡
 			resultCard.style.display = 'block';
 			document.querySelector('.card').style.display = 'none';
-			// 保存 last result to localStorage（便于导出）
-			window._lastResult = {total, highScoreCount, level: lev ? lev.title : '', desc: lev ? lev.desc : '', answers: filledAnswers};
-		}
-
-		function downloadAsCSV(){
-			const r = window._lastResult || {answers: answers.map(v => v===null? '': v)};
-			const rows = [];
-			rows.push(['题号','题目','选项分值']);
-			r.answers.forEach((val,i)=>{
-				rows.push([i+1, QUESTIONS[i], val]);
-			});
-			rows.push([]);
-			rows.push(['总分', r.total ?? (r.answers.reduce((a,b)=>a+(Number(b)||0),0))]);
-			rows.push(['阳性项目数', r.highScoreCount]);
-			rows.push(['等级', r.level ?? '']);
-			let csv = rows.map(rw => rw.map(cell => `"${String(cell).replace(/"/g,'""')}"`).join(',')).join('\n');
-			const blob = new Blob([csv], {type:'text/csv;charset=utf-8;'});
-			const url = URL.createObjectURL(blob);
-			const a = document.createElement('a');
-			a.href = url; a.download = 'SCL-90 症状自评结果.csv';
-			a.click();
-			URL.revokeObjectURL(url);
 		}
 
 		function restart(){
@@ -568,20 +481,9 @@
 			window._lastResult = null;
 		}
 
-		function copyResultSummary(){
-			const r = window._lastResult;
-			if(!r){ alert('请先完成测评并提交结果'); return; }
-			const text = `SCL-90 症状自评结果\n总分：${r.total} 分\n等级：${r.level}\n\n${r.desc}`;
-			navigator.clipboard?.writeText(text).then(()=> {
-				alert('结果已复制到剪贴板');
-			}, ()=> alert('复制失败，请手动复制'));
-		}
-
 		prevBtn.addEventListener('click', goPrev);
 		nextBtn.addEventListener('click', goNext);
-		downloadCSV.addEventListener('click', downloadAsCSV);
 		restartBtn.addEventListener('click', restart);
-		copySummary.addEventListener('click', copyResultSummary);
 
 		renderQuestion(0);
 
