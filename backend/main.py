@@ -68,9 +68,9 @@ async def scl90_result(request: Request):
 
     # 4️⃣ 生成文字描述
     summary = f"""
-==============================
+=======================
    🧠 SCL-90 量表测评结果报告
-==============================
+=======================
 
 【总体情况】
 - 总分：{total_score} 分（{'阳性' if total_score > 160 else '正常'}）
@@ -78,11 +78,9 @@ async def scl90_result(request: Request):
 - 整体结论：{overall_flag}
 
 --------------------------------
-
 {header}{chr(10).join(lines)}
 
 --------------------------------
-
 【结果说明】
 1️⃣ 总体判定依据：
    - 总分 > 160 分，或阳性项目数 > 43 项 → 可能存在总体心理问题；
@@ -97,8 +95,6 @@ async def scl90_result(request: Request):
    - 若单一因子阳性，可针对该领域（如焦虑、抑郁等）进行重点关注；
    - 本结果仅供自测参考，若症状持续或影响日常生活，请寻求专业心理咨询或临床帮助。
 """
-
-
 
     return JSONResponse(content={
         "total_score": total_score,
