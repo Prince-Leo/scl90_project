@@ -462,8 +462,7 @@
 			})
 			.then(res => res.json())
 			.then(data => {
-				document.getElementById("progress").style.display='none';
-				document.getElementById("resultEach").textContent = ${data.summary};
+				document.getElementById("resultEach").textContent = data.summary;
 			})
 			.catch(err => console.error(err));
 			
