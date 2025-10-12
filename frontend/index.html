@@ -302,6 +302,7 @@
     			<div class="desc" id="level"></div>
     			<div class="desc" id="factorAnalysis"></div>
     			<div id="factorTableContainer"></div>
+    			<div class="desc" id="resultDescription"></div>
 			</div>
 
 			<div style="display:flex;gap:8px;margin-top:12px">
@@ -439,6 +440,7 @@
 		const level = document.getElementById("level");
 		const factorAnalysis = document.getElementById("factorAnalysis");
 		const container = document.getElementById('factorTableContainer');
+		const resultDescription = document.getElementById('resultDescription');
 		const restartBtn = document.getElementById('restart');
 
 		function renderQuestion(i){
@@ -524,7 +526,7 @@
 		    // 表头
 		    const thead = document.createElement('thead');
 		    const headerRow = document.createElement('tr');
-		    ['name', '平均分', '阳性项目数', '判定'].forEach(text => {
+		    ['因子', '平均分', '阳性项目数', '判定'].forEach(text => {
 		        const th = document.createElement('th');
 		        th.textContent = text;
 		        headerRow.appendChild(th);
@@ -587,6 +589,18 @@
 					level.textContent = `- 抑郁程度：${data.level}`;
 					factorAnalysis.textContent = '【各因子分析】';
 					renderFactorTable(data.factor_results);
+					resultDescription.textContent = `【结果说明】
+					1️⃣ 总体判定依据：
+					   - 总分 > 160 分，或阳性项目数 > 43 项 → 可能存在总体心理问题；
+					   - 若满足任一条件，则建议进一步心理评估。
+
+					2️⃣ 因子阳性判定依据：
+					   - 因子平均分 > 2 分，或该因子内阳性项目数 > 2 项 → 视为该因子阳性；
+					   - 因子阳性说明该维度存在一定心理压力或障碍倾向。
+
+					3️⃣ 结果解读提示：
+					   - 若多个因子阳性，说明心理问题可能涉及多个方面；
+					   - 若单一因子阳性，可针对该领域（如焦虑、抑郁等）进行重点关注；`
 				}, 500);
 			})
 			.catch(err => {
