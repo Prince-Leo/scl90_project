@@ -27,7 +27,7 @@ FACTORS = {
     "其他": [19,44,59,60,64,66,89],
 }
 
-@app.post("/scl90")
+@app.post("/api/scl90")
 async def scl90_result(request: Request):
     data = await request.json()
     answers = data.get("filledAnswers", [])
