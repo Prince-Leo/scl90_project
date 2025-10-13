@@ -37,14 +37,25 @@ async def scl90_result(request: Request):
     if len(answers) != 90:
         return {"error": "答案数量必须为90项"}
 
-    # 1️⃣ 计算总分与阳性项目数及等级
+    # 1️⃣ 计算总分、阳性项目数及等级
     total_score = sum(answers)
-    total_flag = '阳性' if total_score > 160 else '正常'
+    
     positive_count = sum(1 for x in answers if x >= 2)
-    positive_flag = '阳性' if positive_count > 43 else '正常'
+    
+    overall_flag = "阳性" if (total_score > 160 or positive_count > 43) else "正常"
+
     avg_score = round(sum(answers) / len(answers), 2)
+
     index = min(int(avg_score - 1), 3)
     level = levels[index]
+
+    overall_data = {
+        "总分": total_score,
+        "阳性项目数": positive_count,
+        "整体结论": overall_flag,
+        "整体平均分": avg_score,
+        "抑郁程度": level,
+    }
 
     # 2️⃣ 各因子统计
     factor_results = {}
@@ -59,59 +70,7 @@ async def scl90_result(request: Request):
             "判定": flag,
         }
 
-    # 3️⃣ 总体判定
-    overall_flag = "阳性" if (total_score > 160 or positive_count > 43) else "正常"
-
-    header = "【各因子分析】\n"
-    lines = []
-
-    # 控制列宽，名称对齐，平均分右对齐
-    for k, v in factor_results.items():
-        lines.append(
-            f"    {k.ljust(8, '　')} 平均分：{str(v['平均分']).ljust(5)}"
-            f"阳性项目：{str(v['阳性项目数']).ljust(3)} 判定：{v['判定']}"
-        )
-
-
-    # 4️⃣ 生成文字描述
-    summary = f"""
-=======================
-      SCL-90 量表测评结果报告
-=======================
-
-【总体情况】
-- 总分：{total_score} 分（{total_flag}）
-- 阳性项目数：{positive_count} 项（{positive_flag}）
-- 整体结论：{overall_flag}
-- 整体平均分：{avg_score}
-- 抑郁程度：{level}
-
---------------------------------
-{header}{chr(10).join(lines)}
-
---------------------------------
-【结果说明】
-1️⃣ 总体判定依据：
-   - 总分 > 160 分，或阳性项目数 > 43 项 → 可能存在总体心理问题；
-   - 若满足任一条件，则建议进一步心理评估。
-
-2️⃣ 因子阳性判定依据：
-   - 因子平均分 > 2 分，或该因子内阳性项目数 > 2 项 → 视为该因子阳性；
-   - 因子阳性说明该维度存在一定心理压力或障碍倾向。
-
-3️⃣ 结果解读提示：
-   - 若多个因子阳性，说明心理问题可能涉及多个方面；
-   - 若单一因子阳性，可针对该领域（如焦虑、抑郁等）进行重点关注；
-"""
-
     return JSONResponse(content={
-        "total_score": total_score,
-        "total_flag": total_flag,
-        "positive_count": positive_count,
-        "positive_flag": positive_flag,
-        "overall_flag": overall_flag,
-        "avg_score": avg_score,
-        "level":level,
-        "factor_results": factor_results,
-        "summary": summary.strip()
-    })
+        "overall_data": overall_data,
+        "factor_results": factor_results
+        })

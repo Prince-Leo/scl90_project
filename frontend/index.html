@@ -208,30 +208,33 @@
     		line-height:1.6;
     		white-space:pre-wrap;
     	}
-    	.factor-table {
-		    width: 100%;
-		    border-collapse: collapse;
-		    margin-top: 12px;
-		    font-size: 14px;
+    	.table {
+		   width: 100%;
+		   border-collapse: collapse;
+		   margin-top: 10px;
+		   font-size: 14px;
+		   background: #fff;
+			border-radius: 8px;
+			overflow: hidden;
 		}
 
-		.factor-table th,
-		.factor-table td {
+		.table th,
+		.table td {
 		    border: 1px solid #ddd;
 		    padding: 8px;
 		    text-align: center;
 		}
 
-		.factor-table th {
+		.table th {
 		    background-color: #f5f7fa;
 		    font-weight: 600;
 		}
 
-		.factor-table tbody tr:nth-child(even) {
+		.table tbody tr:nth-child(even) {
 		    background-color: #fafafa;
 		}
 
-		.factor-table tbody tr:hover {
+		.table tbody tr:hover {
 		    background-color: #f1f5ff;
 		}
     	.small{
@@ -293,14 +296,10 @@
 				<div id="loadingBarContainer" class="loading-bar-container">
 				  <div id="loadingBar" class="loading-bar"></div>
 				</div>
-    			<div class="desc" id="resultEach"></div>
-    			<div class="desc" id="overallSituation"></div>
-    			<div class="desc" id="totalScore"></div>
-    			<div class="desc" id="positiveCount"></div>
-    			<div class="desc" id="overallFlag"></div>
-    			<div class="desc" id="avgScore"></div>
-    			<div class="desc" id="level"></div>
-    			<div class="desc" id="factorAnalysis"></div>
+    			<div class="desc" id="resultEach">SCL-90 量表测评结果报告</div>
+    			<div class="desc" id="overallSituation">【总体情况】</div>
+    			<div id="overallTableContainer"></div>
+    			<div class="desc" id="factorAnalysis">【各因子分析】</div>
     			<div id="factorTableContainer"></div>
     			<div class="desc" id="resultDescription"></div>
 			</div>
@@ -431,15 +430,8 @@
 		const resultCard = document.getElementById('resultCard');
 		const loadingBarContainer = document.getElementById("loadingBarContainer");
 		const loadingBar = document.getElementById("loadingBar");
-		const resultEach = document.getElementById("resultEach");
 		const overallSituation = document.getElementById("overallSituation");
-		const totalScore = document.getElementById("totalScore");
-		const positiveCount = document.getElementById("positiveCount");
-		const overallFlag = document.getElementById("overallFlag");
-		const avgScore = document.getElementById("avgScore");
-		const level = document.getElementById("level");
 		const factorAnalysis = document.getElementById("factorAnalysis");
-		const container = document.getElementById('factorTableContainer');
 		const resultDescription = document.getElementById('resultDescription');
 		const restartBtn = document.getElementById('restart');
 
@@ -517,11 +509,45 @@
 			if(idx>0){ idx--; renderQuestion(idx); }
 		}
 
+		function renderOverallTable(overall_data) {
+		  const container = document.getElementById('overallTableContainer');
+		  container.innerHTML = '';
+
+		  const table = document.createElement('table');
+		  table.className = 'table';
+
+		  const thead = document.createElement('thead');
+		  const headerRow = document.createElement('tr');
+		  ['指标', '结果'].forEach(text => {
+		    const th = document.createElement('th');
+		    th.textContent = text;
+		    headerRow.appendChild(th);
+		  });
+		  thead.appendChild(headerRow);
+		  table.appendChild(thead);
+
+		  const tbody = document.createElement('tbody');
+		  for (const key in overallData) {
+		    const row = document.createElement('tr');
+		    const tdKey = document.createElement('td');
+		    tdKey.textContent = key;
+		    const tdValue = document.createElement('td');
+		    tdValue.textContent = overallData[key];
+		    row.appendChild(tdKey);
+		    row.appendChild(tdValue);
+		    tbody.appendChild(row);
+		  }
+		  table.appendChild(tbody);
+
+		  container.appendChild(table);
+		}
+
 		function renderFactorTable(factor_results) {
+		    const container = document.getElementById('factorTableContainer');
 		    container.innerHTML = ''; // 清空
 
 		    const table = document.createElement('table');
-		    table.className = 'factor-table';
+		    table.className = 'table';
 
 		    // 表头
 		    const thead = document.createElement('thead');
@@ -551,7 +577,6 @@
 		    container.appendChild(table);
 		}
 
-
 		function showResult() {
 			const filledAnswers = answers.map(v => v === null ? 0 : v);
 			document.querySelector('.card').style.display = 'none';
@@ -580,14 +605,7 @@
 				setTimeout(() => {
 					loadingBarContainer.style.display = "none";
 					loadingBar.style.width = "0%";
-					resultEach.textContent = 'SCL-90 量表测评结果报告';
-					overallSituation.textContent = '【总体情况】';
-					totalScore.textContent = `- 总分：${data.total_score} (${data.total_flag})`;
-					positiveCount.textContent = `- 阳性项目数：${data.positive_count} (${data.positive_flag})`;
-					overallFlag.textContent = `- 整体结论：${data.overall_flag}`;
-					avgScore.textContent = `- 整体平均分：${data.avg_score}`;
-					level.textContent = `- 抑郁程度：${data.level}`;
-					factorAnalysis.textContent = '【各因子分析】';
+					renderOverallTable(data.overall_data);
 					renderFactorTable(data.factor_results);
 					resultDescription.textContent = `【结果说明】
 1️⃣ 总体判定依据：
