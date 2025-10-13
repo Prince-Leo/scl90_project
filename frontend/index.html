@@ -41,8 +41,26 @@
 		}
 		h3 {
 		  font-size: 16px;
-		  font-weight: 600;
-		  margin: 20px 0 10px;
+		  font-weight: 700;
+		  color: var(--primary);
+		  background: rgba(36, 99, 255, 0.08); /* 淡蓝背景 */
+		  padding: 6px 12px;
+		  border-radius: 8px;
+		  display: inline-block;
+		  margin: 24px 0 12px;
+		  position: relative;
+		  padding-left: 12px; 
+		}
+		h3::before {
+		  content: "";
+		  position: absolute;
+		  left: 0;
+		  top: 50%;
+		  transform: translateY(-50%);
+		  width: 4px;
+		  height: 100%;
+		  background: var(--primary);
+		  border-radius: 2px;
 		}
 		p.lead{
 		  	margin:6px 0 0;
@@ -232,9 +250,8 @@
 		   border-collapse: collapse;
 		   margin-top: 8px;
 		   font-size: 14px;
-		   /*
-		   background: #fff;
-			border-radius: 8px;
+		   background: var(--card);
+			border-radius: 12px;
 			overflow: hidden;
 			*/
 		}
@@ -250,10 +267,13 @@
 		    font-weight: 600;
 		}
 		.table tbody tr:nth-child(even) {
-		    background-color: #fafafa;
+		    background-color: #fefefe;
+		}
+		.table tbody tr:nth-child(odd) {
+		    background-color: var(--card);
 		}
 		.table tbody tr:hover {
-		    background-color: #f1f5ff;
+		    background-color: #f6f9ff;
 		}
     	.small{
     		font-size:13px;
@@ -320,6 +340,7 @@
     			<div id="overallTableContainer"></div>
     			<h3>【各因子分析】</h3>
     			<div id="factorTableContainer"></div>
+    			<h3>【结果说明】</h3>
     			<div class="desc" id="resultDescription"></div>
 			</div>
 
@@ -626,8 +647,7 @@
 					resultContainer.style.display = "block";
 					renderOverallTable(data.overall_data);
 					renderFactorTable(data.factor_results);
-					resultDescription.textContent = `【结果说明】
-1️⃣ 总体判定依据：
+					resultDescription.textContent = `1️⃣ 总体判定依据：
    - 总分 > 160 分，或阳性项目数 > 43 项 → 可能存在总体心理问题；
    - 若满足任一条件，则建议进一步心理评估。
 
