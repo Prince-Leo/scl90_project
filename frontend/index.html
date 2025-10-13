@@ -137,6 +137,26 @@
 		    background:#fbfdff;
 		    transition:all .12s ease;
 		    position: relative;
+		    overflow: hidden;
+		}
+		.opt::after {
+			content: "";
+			position: absolute;
+			left: 50%;
+			top: 50%;
+			width: 0;
+			height: 0;
+			background: rgba(36, 99, 255, 0.2); /* 主色柔和半透明 */
+			border-radius: 50%;
+			transform: translate(-50%, -50%);
+			opacity: 0;
+			transition: width 0.6s ease-out, height 0.6s ease-out, opacity 0.8s ease-out;
+		}
+		.opt:active::after {
+			width: 300%;
+			height: 300%;
+			opacity: 1;
+			transition: 0s; /* 点击瞬间显示波纹 */
 		}
 		.opt input{
 			display:none;
@@ -211,12 +231,24 @@
     		color:var(--muted);
     		font-size:13px;
     	}
-    	.warn-box{
-			color: var(--danger);
-			font-size: 13px;
-			margin-top: 6px;
-			min-height: 18px;
-			text-align: left;
+    	.warn-box {
+		  display: inline-block;
+		  color: #dc2626; /* 明亮但不刺眼的红色 */
+		  background: rgba(220, 38, 38, 0.08); /* 淡红背景 */
+		  border: 1px solid rgba(220, 38, 38, 0.2);
+		  border-radius: 8px;
+		  padding: 6px 10px;
+		  font-size: 13px;
+		  margin-top: 8px;
+		  text-align: left;
+		  line-height: 1.4;
+		  animation: fadeIn 0.25s ease;
+		}
+
+		/* 出现时柔和淡入 */
+		@keyframes fadeIn {
+		  from { opacity: 0; transform: translateY(2px); }
+		  to { opacity: 1; transform: translateY(0); }
 		}
 		.loading-bar-container{
 			display: none;
@@ -254,16 +286,20 @@
 		   margin-top: 8px;
 		   font-size: 14px;
 		   background: var(--card);
-			border-radius: 12px;
+			border-top-left-radius: 12px;
+		   border-top-right-radius: 12px;
+		   border-bottom-left-radius: 0;
+		   border-bottom-right-radius: 0;
 			overflow: hidden;
 		}
-		.table th,
 		.table td {
 		    border-bottom: 1px solid #d1d5db;
 		    padding: 8px;
 		    text-align: center;
 		}
 		.table th {
+			 padding: 8px;
+		    text-align: center;
 		    background-color: rgba(36, 99, 255, 0.05);
 		    color: #2463ff;
 		    font-weight: 600;
