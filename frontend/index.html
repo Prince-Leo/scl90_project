@@ -293,7 +293,7 @@
 			overflow: hidden;
 		}
 		.table td {
-		    border-bottom: 1px solid #d1d5db;
+		    border: 1px solid #d1d5db;
 		    padding: 8px;
 		    text-align: center;
 		}
@@ -365,7 +365,7 @@
 				</div>
 			</div>
 
-			<div id="warnBox" class="warn-box"></div>
+			<div id="warnBox" class="warn-box" style="display:none;">请选择一个选项后再继续</div>
 		</div>
 
 		<div id="resultCard" class="card" style="display:none">
@@ -567,10 +567,10 @@
 			const warnBox = document.getElementById('warnBox');
 
 			if (answers[idx] === null) {
-				warnBox.textContent = '请选择一个选项后再继续';
+				warnBox.style.display = 'block';
 				return;
 			} else {
-				warnBox.textContent = ''; // 清空警告
+				warnBox.style.display = 'none';
 			}
 
 			// 如果最后一题：提交
