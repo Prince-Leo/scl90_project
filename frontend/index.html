@@ -33,6 +33,17 @@
 		  	font-size:18px;
 		  	margin:0;
 		}
+		h2 {
+		  font-size: 20px;
+		  font-weight: 700;
+		  text-align: center;
+		  margin-bottom: 8px;
+		}
+		h3 {
+		  font-size: 16px;
+		  font-weight: 600;
+		  margin: 20px 0 10px;
+		}
 		p.lead{
 		  	margin:6px 0 0;
 		  	color:var(--muted);
@@ -202,6 +213,14 @@
 			border-radius: 4px;
 			transition: width 0.3s ease;
 		}
+		/* 蓝色分割线 */
+		.divider {
+		  width: 60px;
+		  height: 3px;
+		  background: var(--primary);
+		  border-radius: 3px;
+		  margin: 0 auto 12px;
+		}
 		.desc{
     		font-size:14px;
     		color:#222;
@@ -211,29 +230,28 @@
     	.table {
 		   width: 100%;
 		   border-collapse: collapse;
-		   margin-top: 10px;
+		   margin-top: 8px;
 		   font-size: 14px;
+		   /*
 		   background: #fff;
 			border-radius: 8px;
 			overflow: hidden;
+			*/
 		}
-
 		.table th,
 		.table td {
-		    border: 1px solid #ddd;
+		    border: 1px solid #eee;
 		    padding: 8px;
 		    text-align: center;
 		}
-
 		.table th {
-		    background-color: #f5f7fa;
+		    background-color: #f3f4f6;
+		    color: #333;
 		    font-weight: 600;
 		}
-
 		.table tbody tr:nth-child(even) {
 		    background-color: #fafafa;
 		}
-
 		.table tbody tr:hover {
 		    background-color: #f1f5ff;
 		}
@@ -296,10 +314,11 @@
 				<div id="loadingBar" class="loading-bar"></div>
 			</div>
 			<div id="resultContainer" style="display:none;">
-    			<div class="desc" id="resultEach">SCL-90 量表测评结果报告</div>
-    			<div class="desc" id="overallSituation">【总体情况】</div>
+    			<h2>SCL-90 量表测评结果报告</h2>
+    			<div class="divider"></div>
+    			<h3>【总体情况】</h3>
     			<div id="overallTableContainer"></div>
-    			<div class="desc" id="factorAnalysis">【各因子分析】</div>
+    			<h3>【各因子分析】</h3>
     			<div id="factorTableContainer"></div>
     			<div class="desc" id="resultDescription"></div>
 			</div>
