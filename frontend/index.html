@@ -194,7 +194,7 @@
     	}
     	.opt .checkmark {
 			position: absolute;
-			left: 50%;
+			right: 12px;
 			top: 50%;
 			transform: translate(-50%, -50%) scale(0.6);
 			opacity: 0;
@@ -210,6 +210,12 @@
     	.opt .checkmark::after {
     		content: "✔";
     	}
+    	.opt.selected .tag {
+		    background: var(--primary); /* 背景变为主色 */
+		    color: #fff; /* 文字变白 */
+		    border-color: var(--primary); /* 可选：边框同样变色 */
+		    transition: all 0.25s ease; /* 平滑过渡 */
+		}
     	.controls{
     		display:flex;
     		gap:8px;
