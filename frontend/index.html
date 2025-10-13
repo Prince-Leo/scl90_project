@@ -135,7 +135,7 @@
 		    border:1px solid #eef2ff;
 		    cursor:pointer;
 		    background:#fbfdff;
-		    transition:all .12s ease;
+		    transition:all .15s ease;
 		    position: relative;
 		    overflow: hidden;
 		}
@@ -146,17 +146,26 @@
 			top: 50%;
 			width: 0;
 			height: 0;
-			background: rgba(36, 99, 255, 0.2); /* 主色柔和半透明 */
+			background: rgba(36, 99, 255, 0.25); /* 主色柔和半透明 */
 			border-radius: 50%;
 			transform: translate(-50%, -50%);
 			opacity: 0;
-			transition: width 0.6s ease-out, height 0.6s ease-out, opacity 0.8s ease-out;
+			pointer-events: none;
 		}
 		.opt:active::after {
-			width: 300%;
-			height: 300%;
-			opacity: 1;
-			transition: 0s; /* 点击瞬间显示波纹 */
+			animation: ripple 0.6s ease-out forwards;
+		}
+		@keyframes ripple {
+			0% {
+				width: 0;
+				height: 0;
+				opacity: 0.3;
+			}
+			100% {
+				width: 280%;
+				height: 280%;
+				opacity: 0;
+			}
 		}
 		.opt input{
 			display:none;
@@ -183,18 +192,20 @@
     		box-shadow:0 6px 20px rgba(36,99,255,0.12);
     		background:linear-gradient(180deg,#f6fbff,#fff);
     	}
-    	.opt .checkmark{
-		    opacity: 0;
-		    transform: scale(0.6);
-		    transition: all 0.2s ease;
-		    font-size: 18px;
-		    color: var(--primary);
-		    margin-left: auto;
-		    user-select: none;
-	    }
+    	.opt .checkmark {
+			position: absolute;
+			left: 50%;
+			top: 50%;
+			transform: translate(-50%, -50%) scale(0.6);
+			opacity: 0;
+			transition: all 0.25s ease;
+			font-size: 20px;
+			color: var(--primary);
+			user-select: none;
+		}
     	.opt.selected .checkmark {
     		opacity: 1;
-    		transform: scale(1);
+    		transform: translate(-50%, -50%) scale(1);
     	}
     	.opt .checkmark::after {
     		content: "✔";
@@ -372,7 +383,7 @@
 			<div id="loadingBarContainer" class="loading-bar-container">
 				<div id="loadingBar" class="loading-bar"></div>
 			</div>
-			<div id="resultContainer" style="display:none;">
+			<div id="resultContainer" style="display:none">
     			<h2>SCL-90 量表测评结果报告</h2>
     			<div class="divider"></div>
     			<h3>总体情况</h3>
@@ -542,8 +553,8 @@
 		    		el.classList.add('selected');
 
 		    		// 自动跳到下一题
-				    document.getElementById('warnBox').textContent = '';
-				    setTimeout(goNext, 150); // 延迟150ms，给选中动画一点时间
+				    document.getElementById('warnBox').style.display = 'none';
+				    setTimeout(goNext, 250); // 延迟150ms，给选中动画一点时间
 		    	};
 				el.onkeydown = (e)=>{
 		    		if(e.key === 'Enter' || e.key === ' '){ el.click(); e.preventDefault(); }
