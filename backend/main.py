@@ -52,8 +52,8 @@ async def scl90_result(request: Request):
     overall_data = {
         "总分": total_score,
         "阳性项目数": positive_count,
-        "整体结论": overall_flag,
         "整体平均分": avg_score,
+        "整体结论": overall_flag,
         "抑郁程度": level,
     }
 
