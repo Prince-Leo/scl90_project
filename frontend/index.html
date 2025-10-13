@@ -292,10 +292,10 @@
 		</div>
 
 		<div id="resultCard" class="card" style="display:none">
-			<div>
-				<div id="loadingBarContainer" class="loading-bar-container">
-				  <div id="loadingBar" class="loading-bar"></div>
-				</div>
+			<div id="loadingBarContainer" class="loading-bar-container">
+				<div id="loadingBar" class="loading-bar"></div>
+			</div>
+			<div id="resultContainer" style="display:none;">
     			<div class="desc" id="resultEach">SCL-90 量表测评结果报告</div>
     			<div class="desc" id="overallSituation">【总体情况】</div>
     			<div id="overallTableContainer"></div>
@@ -430,6 +430,7 @@
 		const resultCard = document.getElementById('resultCard');
 		const loadingBarContainer = document.getElementById("loadingBarContainer");
 		const loadingBar = document.getElementById("loadingBar");
+		const resultContainer = document.getElementById("resultContainer");
 		const resultDescription = document.getElementById('resultDescription');
 		const restartBtn = document.getElementById('restart');
 
@@ -581,7 +582,7 @@
 
 			resultCard.style.display = 'block';
 			loadingBarContainer.style.display = 'block';
-			resultEach.textContent = '';
+			resultContainer.style.display = "none"
 
 			// 模拟进度条缓慢增长
 			let progress = 0;
@@ -603,6 +604,7 @@
 				setTimeout(() => {
 					loadingBarContainer.style.display = "none";
 					loadingBar.style.width = "0%";
+					resultContainer.style.display = "block";
 					renderOverallTable(data.overall_data);
 					renderFactorTable(data.factor_results);
 					resultDescription.textContent = `【结果说明】
@@ -622,7 +624,6 @@
 			.catch(err => {
 				clearInterval(interval);
 				loadingBarContainer.style.display = "none";
-				resultEach.textContent = "加载失败，请重试。";
 				console.error(err);
 			});
 		}
