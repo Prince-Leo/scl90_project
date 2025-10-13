@@ -430,8 +430,6 @@
 		const resultCard = document.getElementById('resultCard');
 		const loadingBarContainer = document.getElementById("loadingBarContainer");
 		const loadingBar = document.getElementById("loadingBar");
-		const overallSituation = document.getElementById("overallSituation");
-		const factorAnalysis = document.getElementById("factorAnalysis");
 		const resultDescription = document.getElementById('resultDescription');
 		const restartBtn = document.getElementById('restart');
 
@@ -527,12 +525,12 @@
 		  table.appendChild(thead);
 
 		  const tbody = document.createElement('tbody');
-		  for (const key in overallData) {
+		  for (const key in overall_data) {
 		    const row = document.createElement('tr');
 		    const tdKey = document.createElement('td');
 		    tdKey.textContent = key;
 		    const tdValue = document.createElement('td');
-		    tdValue.textContent = overallData[key];
+		    tdValue.textContent = overall_data[key];
 		    row.appendChild(tdKey);
 		    row.appendChild(tdValue);
 		    tbody.appendChild(row);
