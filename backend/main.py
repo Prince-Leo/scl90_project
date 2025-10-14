@@ -88,21 +88,21 @@ async def scl90_result(request: Request):
         total = sum(vals)
         avg = round(sum(vals) / len(vals), 2)
         if name == "其他":
-            factor_results[其他] = {
-            "总分": total,
-            "均分": avg,
-            "判定": "-",
-            "M±SD": "-",
+            factor_results[name] = {
+                "总分": total,
+                "均分": avg,
+                "判定": "-",
+                "M±SD": "-",
             }
-            break
-        level = "正常"
-        msd_value = MSD1.get(name, "")
-        factor_results[name] = {
-            "总分": total,
-            "均分": avg,
-            "判定": level,
-            "M±SD": msd_value,
-        }
+        else:
+            level = "正常"
+            msd_value = MSD1.get(name, "-")
+            factor_results[name] = {
+                "总分": total,
+                "均分": avg,
+                "判定": level,
+                "M±SD": msd_value,
+            }
 
     return JSONResponse(content={
         "overall_flag": overall_flag,
