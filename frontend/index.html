@@ -291,11 +291,16 @@
 		  border-radius: 3px;
 		  margin: 0 auto 12px;
 		}
+		.desc-row {
+		   background-color: #f9f9f9;  /* 背景颜色 */
+		   text-align: left;  /* 左对齐 */
+		}
 		.desc{
     		font-size:14px;
-    		color:#222;
+    		color:#333;
     		line-height:1.6;
-    		white-space:pre-wrap;
+    		padding: 12px;
+    		border-top: 1px solid #cbd5e1; /* 添加分隔线 */
     	}
     	.table {
 		   width: 100%;
@@ -604,7 +609,7 @@
 			if(idx>0){ idx--; renderQuestion(idx); }
 		}
 
-		function renderOverallTable(overall_results) {
+		function renderOverallTable(overall_results, overall_desc, overall_flag) {
 		    const container = document.getElementById('overallTableContainer');
 		    container.innerHTML = ''; // 清空
 
@@ -634,8 +639,22 @@
 		        });
 		        tbody.appendChild(row);
 		    }
-		    table.appendChild(tbody);
 
+		    // 添加描述行
+		    const descriptionRow = document.createElement('tr');
+		    descriptionRow.className = 'desc-row';
+		    const td = document.createElement('td');
+		    td.colSpan = 4;  // 跨越所有列
+		    td.className = 'desc';  // 添加描述的样式类
+
+		    // 生成描述文本
+		    const descriptionText = `说明：根据全国正常人SCL-90常模（N=1388，1-5级评分，国内医院常用标准），当测试总分超过160分或阳性项目数超过43项时，可能提示存在一定的心理或情绪压力。您的测试总分为${overall_results.A}分，阳性项目数为${overall_results.A}项，综合结果显示您${overall_desc}，总体评估为${overall_flag}。按总症状指数，目前的测试评级为${level}。需要说明的是，SCL-90量表是一种辅助筛查工具，结果仅供参考，不能替代专业的心理或医学诊断。如有需要，可进一步咨询专业人士以获得更具体的指导和帮助。`;
+
+		    td.textContent = descriptionText;
+		    descriptionRow.appendChild(td);
+		    tbody.appendChild(descriptionRow);
+
+		    table.appendChild(tbody);
 		    container.appendChild(table);
 		}
 
@@ -649,7 +668,7 @@
 		    // 表头
 		    const thead = document.createElement('thead');
 		    const headerRow = document.createElement('tr');
-		    ['因子', '平均分', '阳性项目数', '判定'].forEach(text => {
+		    ['因子', '平均指数', '阳性项目数', '判定'].forEach(text => {
 		        const th = document.createElement('th');
 		        th.textContent = text;
 		        headerRow.appendChild(th);
@@ -662,7 +681,7 @@
 		    for (const name in factor_results) {
 		        const row = document.createElement('tr');
 		        const data = factor_results[name];
-		        [name, data["平均分"], data["阳性项目数"], data["判定"]].forEach(text => {
+		        [name, data["平均指数"], data["阳性项目数"], data["判定"]].forEach(text => {
 		            const td = document.createElement('td');
 		            td.textContent = text;
 		            row.appendChild(td);
@@ -703,7 +722,7 @@
 					loadingBarContainer.style.display = "none";
 					loadingBar.style.width = "0%";
 					resultContainer.style.display = "block";
-					renderOverallTable(data.overall_results);
+					renderOverallTable(data.overall_results, data.overall_desc, data.overall_flag);
 					renderFactorTable(data.factor_results);
 					resultDescription.textContent = `1️⃣ 总体判定依据：
    - 总分 > 160 分，或阳性项目数 > 43 项 → 可能存在总体心理问题；

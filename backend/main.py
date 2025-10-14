@@ -27,7 +27,7 @@ FACTORS = {
     "其他": [19,44,59,60,64,66,89],
 }
 
-levels = ["无抑郁", "轻度抑郁", "中度抑郁", "重度抑郁"]
+levels = ["正常", "轻度", "中度", "重度"]
 
 @app.post("/api/scl90")
 async def scl90_result(request: Request):
@@ -43,6 +43,7 @@ async def scl90_result(request: Request):
     positive_count = sum(1 for x in answers if x >= 2)
     positive_flag = "阳性" if (positive_count > 43) else "正常"
     overall_flag = "阳性" if (total_score > 160 or positive_count > 43) else "正常"
+    overall_desc = "在一些方面可能感受到一定的压力或不适" if (total_score > 160 or positive_count > 43) else "各方面心理状态较为健康，未见明显异常迹象"
 
     avg_score = round(sum(answers) / len(answers), 2)
 
@@ -63,13 +64,14 @@ async def scl90_result(request: Request):
         pos = sum(1 for v in vals if v >= 2)
         flag = "阳性" if (avg > 2 or pos > 2) else "正常"
         factor_results[name] = {
-            "平均分": avg,
+            "平均指数": avg,
             "阳性项目数": pos,
             "判定": flag,
         }
 
     return JSONResponse(content={
         "overall_flag": overall_flag,
+        "overall_desc": overall_desc,
         "overall_results": overall_results,
         "factor_results": factor_results
         })
