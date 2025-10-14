@@ -37,7 +37,7 @@ MSD1 = {
     "恐怖": "1.23±0.41",
     "偏执": "1.43±0.57",
     "精神病性": "1.29±0.42",
-    "其他": " ",
+    "其他": "1.29±0.42",
 }
 
 MSD2 = {
@@ -50,7 +50,7 @@ MSD2 = {
     "恐怖": "[0.82, 1.64]",
     "偏执": "[0.86, 2.00]",
     "精神病性": "[0.87, 1.71]",
-    "其他": " "
+    "其他": "[0.87, 1.71]"
 }
 
 
@@ -90,18 +90,8 @@ async def scl90_result(request: Request):
         total = sum(vals)
         avg = round(sum(vals) / len(vals), 2)
 
-        # 处理 "其他" 因子
-        if name == "其他":
-            factor_results[name] = {
-                "总分": total,
-                "均分": avg,
-                "判定": " ",
-                "M±SD": " ",
-            }
-            continue
-        
         # 获取对应因子的 M±SD 和范围
-        msd_range = MSD2.get(name, [0, 0])
+        msd_range = MSD2.get(name, [1, 2])
         min_val, max_val = msd_range
 
         # 判断因子的等级
