@@ -39,9 +39,9 @@ async def scl90_result(request: Request):
 
     # 1️⃣ 计算总分、阳性项目数及等级
     total_score = sum(answers)
-    
+    total_flag = "阳性" if (total_score > 160) else "正常"
     positive_count = sum(1 for x in answers if x >= 2)
-    
+    positive_flag = "阳性" if (positive_count > 43) else "正常"
     overall_flag = "阳性" if (total_score > 160 or positive_count > 43) else "正常"
 
     avg_score = round(sum(answers) / len(answers), 2)
@@ -49,12 +49,10 @@ async def scl90_result(request: Request):
     index = min(int(avg_score - 1), 3)
     level = levels[index]
 
-    overall_data = {
-        "总分": total_score,
-        "阳性项目数": positive_count,
-        "整体平均分": avg_score,
-        "整体结论": overall_flag,
-        "抑郁程度": level,
+    overall_results = {
+        "总分": {"A": total_score, "B": total_flag, "C": "90~450"},
+        "阳性项目数": {"A": positive_count, "B": positive_flag, "C": "0~90"},
+        "总症状指数": {"A": avg_score, "B": level, "C": "1~5"},
     }
 
     # 2️⃣ 各因子统计
@@ -71,6 +69,7 @@ async def scl90_result(request: Request):
         }
 
     return JSONResponse(content={
-        "overall_data": overall_data,
+        "overall_flag": overall_flag,
+        "overall_results": overall_data,
         "factor_results": factor_results
         })

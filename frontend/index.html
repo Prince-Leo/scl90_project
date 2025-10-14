@@ -604,37 +604,39 @@
 			if(idx>0){ idx--; renderQuestion(idx); }
 		}
 
-		function renderOverallTable(overall_data) {
-		  const container = document.getElementById('overallTableContainer');
-		  container.innerHTML = '';
+		function renderOverallTable(overall_results) {
+		    const container = document.getElementById('overallTableContainer');
+		    container.innerHTML = ''; // 清空
 
-		  const table = document.createElement('table');
-		  table.className = 'table';
+		    const table = document.createElement('table');
+		    table.className = 'table';
 
-		  const thead = document.createElement('thead');
-		  const headerRow = document.createElement('tr');
-		  ['指标', '结果'].forEach(text => {
-		    const th = document.createElement('th');
-		    th.textContent = text;
-		    headerRow.appendChild(th);
-		  });
-		  thead.appendChild(headerRow);
-		  table.appendChild(thead);
+		    // 表头
+		    const thead = document.createElement('thead');
+		    const headerRow = document.createElement('tr');
+		    ['项目', '得分', '结果', '参考'].forEach(text => {
+		        const th = document.createElement('th');
+		        th.textContent = text;
+		        headerRow.appendChild(th);
+		    });
+		    thead.appendChild(headerRow);
+		    table.appendChild(thead);
 
-		  const tbody = document.createElement('tbody');
-		  for (const key in overall_data) {
-		    const row = document.createElement('tr');
-		    const tdKey = document.createElement('td');
-		    tdKey.textContent = key;
-		    const tdValue = document.createElement('td');
-		    tdValue.textContent = overall_data[key];
-		    row.appendChild(tdKey);
-		    row.appendChild(tdValue);
-		    tbody.appendChild(row);
-		  }
-		  table.appendChild(tbody);
+		    // 表体
+		    const tbody = document.createElement('tbody');
+		    for (const name in overall_results) {
+		        const row = document.createElement('tr');
+		        const data = overall_results[name];
+		        [name, data["A"], data["B"], data["C"]].forEach(text => {
+		            const td = document.createElement('td');
+		            td.textContent = text;
+		            row.appendChild(td);
+		        });
+		        tbody.appendChild(row);
+		    }
+		    table.appendChild(tbody);
 
-		  container.appendChild(table);
+		    container.appendChild(table);
 		}
 
 		function renderFactorTable(factor_results) {
@@ -701,7 +703,7 @@
 					loadingBarContainer.style.display = "none";
 					loadingBar.style.width = "0%";
 					resultContainer.style.display = "block";
-					renderOverallTable(data.overall_data);
+					renderOverallTable(data.overall_results);
 					renderFactorTable(data.factor_results);
 					resultDescription.textContent = `1️⃣ 总体判定依据：
    - 总分 > 160 分，或阳性项目数 > 43 项 → 可能存在总体心理问题；
@@ -738,15 +740,6 @@
 		restartBtn.addEventListener('click', restart);
 
 		renderQuestion(0);
-
-		let touchStartX = 0;
-		qArea.addEventListener('touchstart', (e)=> { touchStartX = e.touches[0].clientX; }, {passive:true});
-		qArea.addEventListener('touchend', (e)=> {
-			const dx = e.changedTouches[0].clientX - touchStartX;
-			if(Math.abs(dx) > 50){
-				if(dx < 0) goNext(); else goPrev();
-			}
-		});
 	</script>
 </body>
 </html>
