@@ -27,6 +27,33 @@ FACTORS = {
     "其他": [19,44,59,60,64,66,89],
 }
 
+MSD1 = {
+    "躯体化": "1.37±0.48",
+    "强迫症状": "1.62±0.58",
+    "人际关系敏感": "1.65±0.61",
+    "抑郁": "1.50±0.59",
+    "焦虑": "1.39±0.43",
+    "敌对": "1.46±0.55",
+    "恐怖": "1.23±0.41",
+    "偏执": "1.43±0.57",
+    "精神病性": "1.29±0.42",
+    "其他": "",
+}
+
+MSD2 = {
+    "躯体化": "[0.89, 1.85]",
+    "强迫症状": "[1.04, 2.20]",
+    "人际关系敏感": "[1.04, 2.26]",
+    "抑郁": "[0.91, 2.09]",
+    "焦虑": "[0.96, 1.82]",
+    "敌对": "[0.91, 2.01]",
+    "恐怖": "[0.82, 1.64]",
+    "偏执": "[0.86, 2.00]",
+    "精神病性": "[0.87, 1.71]",
+    "其他": ""
+}
+
+
 levels = ["正常", "轻度", "中度", "重度"]
 
 @app.post("/api/scl90")
@@ -60,13 +87,37 @@ async def scl90_result(request: Request):
     factor_results = {}
     for name, idxs in FACTORS.items():
         vals = [answers[i-1] for i in idxs]  # 转为0基索引
+        total = sum(vals)
         avg = round(sum(vals) / len(vals), 2)
-        pos = sum(1 for v in vals if v >= 2)
-        flag = "阳性" if (avg > 2 or pos > 2) else "正常"
+        # 获取对应因子的 M±SD 和范围
+        msd_range = MSD2.get(name, [None, None])
+        # 处理 "其他" 因子
+        if name == "其他":
+            factor_results[name] = {
+                "总分": total,
+                "均分": avg,
+                "判定": "",
+                "M±SD": "",
+            }
+            continue
+        min_val, max_val = msd_range if msd_range != [None, None] else (0, 0)
+
+        # 判断因子的等级
+        level = "正常"
+        if avg >= min_val and avg <= max_val:
+            level = "正常"
+        elif avg > max_val and avg <= max_val + 3:
+            level = "轻度"
+        elif avg > 3 and avg <= 4:
+            level = "中度"
+        elif avg > 4 and avg <= 5:
+            level = "重度"
+        msd_value = MSD1.get(name, "")
         factor_results[name] = {
-            "平均指数": avg,
-            "阳性项目数": pos,
-            "判定": flag,
+            "总分": total,
+            "均分": avg,
+            "判定": level,
+            "M±SD": msd_value,
         }
 
     return JSONResponse(content={

@@ -261,9 +261,6 @@
 		  line-height: 1.4;
 		  animation: fadeIn 0.25s ease;
 		}
-		.card warn-box{
-			display: inline-block;
-		}
 		/* 出现时柔和淡入 */
 		@keyframes fadeIn {
 		  from { opacity: 0; transform: translateY(2px); }
@@ -293,21 +290,13 @@
 		  border-radius: 3px;
 		  margin: 0 auto 12px;
 		}
-		.desc-row {
-		   background-color: #f9f9f9;  /* 背景颜色 */
-		   text-align: left;  /* 左对齐 */
-		}
+
 		.desc{
     		font-size:14px;
     		color:#333;
     		line-height:1.6;
-    		padding: 12px;
-    		border-top: 1px solid #cbd5e1; /* 添加分隔线 */
-    		text-align: left;  /* 确保描述文本左对齐 */
+    		white-space:pre-wrap;
     	}
-    	.desc-row td {
-		    text-align: left;  /* 强制描述内容左对齐 */
-		}
     	.table {
 		   width: 100%;
 		   border-collapse: collapse;
@@ -341,6 +330,13 @@
 		}
 		.table tbody tr:hover {
 		    background-color: #f6f9ff;
+		}
+		.desc-row {
+		   background-color: #f9f9f9;  /* 背景颜色 */
+		   text-align: left;  /* 左对齐 */
+		}
+		.desc-row td {
+		   text-align: left;  /* 确保描述行的文本左对齐 */
 		}
     	.small{
     		font-size:13px;
@@ -654,7 +650,7 @@
 		    td.className = 'desc';  // 添加描述的样式类
 
 		    // 生成描述文本
-		    const descriptionText = `    说明：根据全国正常人SCL-90常模（N=1388，1-5级评分，国内医院常用标准），当测试总分超过160分或阳性项目数超过43项时，可能提示存在一定的心理或情绪压力。您的测试总分为${overall_results.总分.A}分，阳性项目数为${overall_results.阳性项目数.A}项，综合结果显示您${overall_desc}，总体评估为${overall_flag}。按总症状指数，目前的测试评级为${overall_results.总症状指数.C}。需要说明的是，SCL-90量表是一种辅助筛查工具，结果仅供参考，不能替代专业的心理或医学诊断。如有需要，可进一步咨询专业人士以获得更具体的指导和帮助。`;
+		    const descriptionText = `说明：根据全国正常人SCL-90常模（N=1388，1-5级评分，国内医院常用标准），当测试总分超过160分或阳性项目数超过43项时，可能存在一定的心理或情绪压力。您的测试总分为${overall_results.总分.A}分，阳性项目数为${overall_results.阳性项目数.A}项，综合结果显示您${overall_desc}，总体评估为${overall_flag}。按总症状指数，目前的测试评级为${overall_results.总症状指数.C}。需要说明的是，SCL-90量表是一种辅助筛查工具，结果仅供参考，不能替代专业的心理或医学诊断。如有需要，可进一步咨询专业人士以获得更具体的指导和帮助。`;
 
 		    td.textContent = descriptionText;
 		    descriptionRow.appendChild(td);
@@ -674,7 +670,7 @@
 		    // 表头
 		    const thead = document.createElement('thead');
 		    const headerRow = document.createElement('tr');
-		    ['因子', '平均指数', '阳性项目数', '判定'].forEach(text => {
+		    ['因子', '总分', '均分', '判定', 'M±SD'].forEach(text => {
 		        const th = document.createElement('th');
 		        th.textContent = text;
 		        headerRow.appendChild(th);
@@ -687,13 +683,26 @@
 		    for (const name in factor_results) {
 		        const row = document.createElement('tr');
 		        const data = factor_results[name];
-		        [name, data["平均指数"], data["阳性项目数"], data["判定"]].forEach(text => {
+		        [name, data["总分"], data["均分"], data["判定"], data["M±SD"]].forEach(text => {
 		            const td = document.createElement('td');
 		            td.textContent = text;
 		            row.appendChild(td);
 		        });
 		        tbody.appendChild(row);
 		    }
+		    // 添加描述行
+		    const descriptionRow = document.createElement('tr');
+		    descriptionRow.className = 'desc-row';
+		    const td = document.createElement('td');
+		    td.colSpan = 5;  // 跨越所有列
+		    td.className = 'desc';  // 添加描述的样式类
+
+		    // 生成描述文本
+		    const descriptionText = `说明：根据全国正常人SCL-90常模（N=1388，1-5级评分，国内医院常用标准），每个因子均分数值范围为1~5，参考结果是以因子均分得到。如果因子均分超过因子常模(M+SD,平均分+标准差)即表示筛查异常。由于量表只是辅助筛查工具，因此量表测试结果仅供参考。`;
+
+		    td.textContent = descriptionText;
+		    descriptionRow.appendChild(td);
+		    tbody.appendChild(descriptionRow);
 		    table.appendChild(tbody);
 
 		    container.appendChild(table);
