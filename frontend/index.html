@@ -249,7 +249,7 @@
     		font-size:13px;
     	}
     	.warn-box {
-		  display: table;
+		  display: inline-block;
 		  color: #dc2626; /* 明亮但不刺眼的红色 */
 		  background: rgba(220, 38, 38, 0.08); /* 淡红背景 */
 		  border: 1px solid rgba(220, 38, 38, 0.2);
@@ -261,7 +261,9 @@
 		  line-height: 1.4;
 		  animation: fadeIn 0.25s ease;
 		}
-
+		.card warn-box{
+			display: inline-block;
+		}
 		/* 出现时柔和淡入 */
 		@keyframes fadeIn {
 		  from { opacity: 0; transform: translateY(2px); }
@@ -301,7 +303,11 @@
     		line-height:1.6;
     		padding: 12px;
     		border-top: 1px solid #cbd5e1; /* 添加分隔线 */
+    		text-align: left;  /* 确保描述文本左对齐 */
     	}
+    	.desc-row td {
+		    text-align: left;  /* 强制描述内容左对齐 */
+		}
     	.table {
 		   width: 100%;
 		   border-collapse: collapse;
@@ -648,7 +654,7 @@
 		    td.className = 'desc';  // 添加描述的样式类
 
 		    // 生成描述文本
-		    const descriptionText = `说明：根据全国正常人SCL-90常模（N=1388，1-5级评分，国内医院常用标准），当测试总分超过160分或阳性项目数超过43项时，可能提示存在一定的心理或情绪压力。您的测试总分为${overall_results.总分.A}分，阳性项目数为${overall_results.阳性项目数.A}项，综合结果显示您${overall_desc}，总体评估为${overall_flag}。按总症状指数，目前的测试评级为${overall_results.总症状指数.level}。需要说明的是，SCL-90量表是一种辅助筛查工具，结果仅供参考，不能替代专业的心理或医学诊断。如有需要，可进一步咨询专业人士以获得更具体的指导和帮助。`;
+		    const descriptionText = `    说明：根据全国正常人SCL-90常模（N=1388，1-5级评分，国内医院常用标准），当测试总分超过160分或阳性项目数超过43项时，可能提示存在一定的心理或情绪压力。您的测试总分为${overall_results.总分.A}分，阳性项目数为${overall_results.阳性项目数.A}项，综合结果显示您${overall_desc}，总体评估为${overall_flag}。按总症状指数，目前的测试评级为${overall_results.总症状指数.C}。需要说明的是，SCL-90量表是一种辅助筛查工具，结果仅供参考，不能替代专业的心理或医学诊断。如有需要，可进一步咨询专业人士以获得更具体的指导和帮助。`;
 
 		    td.textContent = descriptionText;
 		    descriptionRow.appendChild(td);
