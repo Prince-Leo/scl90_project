@@ -50,7 +50,7 @@ MSD2 = {
     "恐怖": "[0.82, 1.64]",
     "偏执": "[0.86, 2.00]",
     "精神病性": "[0.87, 1.71]",
-    "其他": ""
+    "其他": " "
 }
 
 
@@ -101,14 +101,14 @@ async def scl90_result(request: Request):
             continue
         
         # 获取对应因子的 M±SD 和范围
-        msd_range = MSD2.get(name, [None, None])
-        min_val, max_val = msd_range if msd_range != [None, None] else (0, 0)
+        msd_range = MSD2.get(name, [0, 0])
+        min_val, max_val = msd_range
 
         # 判断因子的等级
         level = "正常"
         if avg >= min_val and avg <= max_val:
             level = "正常"
-        elif avg > max_val and avg <= max_val + 3:
+        elif avg > max_val and avg <= 3:
             level = "轻度"
         elif avg > 3 and avg <= 4:
             level = "中度"
