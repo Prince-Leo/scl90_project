@@ -37,7 +37,6 @@ MSD1 = {
     "恐怖": "1.23±0.41",
     "偏执": "1.43±0.57",
     "精神病性": "1.29±0.42",
-    "其他": "1.29±0.42",
 }
 
 MSD2 = {
@@ -50,7 +49,6 @@ MSD2 = {
     "恐怖": "[0.82, 1.64]",
     "偏执": "[0.86, 2.00]",
     "精神病性": "[0.87, 1.71]",
-    "其他": "[0.87, 1.71]"
 }
 
 
@@ -89,6 +87,14 @@ async def scl90_result(request: Request):
         vals = [answers[i-1] for i in idxs]  # 转为0基索引
         total = sum(vals)
         avg = round(sum(vals) / len(vals), 2)
+        if name == "其他":
+            factor_results[其他] = {
+            "总分": total,
+            "均分": avg,
+            "判定": "-",
+            "M±SD": "-",
+            }
+            break
         level = "正常"
         msd_value = MSD1.get(name, "")
         factor_results[name] = {
