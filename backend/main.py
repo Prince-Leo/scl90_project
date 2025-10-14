@@ -70,6 +70,6 @@ async def scl90_result(request: Request):
 
     return JSONResponse(content={
         "overall_flag": overall_flag,
-        "overall_results": overall_data,
+        "overall_results": overall_results,
         "factor_results": factor_results
         })
