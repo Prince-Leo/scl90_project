@@ -50,9 +50,9 @@ async def scl90_result(request: Request):
     level = levels[index]
 
     overall_results = {
-        "总分": {"A": total_score, "B": total_flag, "C": "90~450"},
-        "阳性项目数": {"A": positive_count, "B": positive_flag, "C": "0~90"},
-        "总症状指数": {"A": avg_score, "B": level, "C": "1~5"},
+        "总分": {"A": total_score, "B": "90~450", "C": total_flag},
+        "阳性项目数": {"A": positive_count,"B": "0~90", "C": positive_flag},
+        "总症状指数": {"A": avg_score, "B": "1~5", "C": level},
     }
 
     # 2️⃣ 各因子统计
