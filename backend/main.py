@@ -89,21 +89,7 @@ async def scl90_result(request: Request):
         vals = [answers[i-1] for i in idxs]  # 转为0基索引
         total = sum(vals)
         avg = round(sum(vals) / len(vals), 2)
-
-        # 获取对应因子的 M±SD 和范围
-        msd_range = MSD2.get(name, [1, 2])
-        min_val, max_val = msd_range
-
-        # 判断因子的等级
         level = "正常"
-        if avg >= min_val and avg <= max_val:
-            level = "正常"
-        elif avg > max_val and avg <= 3:
-            level = "轻度"
-        elif avg > 3 and avg <= 4:
-            level = "中度"
-        elif avg > 4 and avg <= 5:
-            level = "重度"
         msd_value = MSD1.get(name, "")
         factor_results[name] = {
             "总分": total,
