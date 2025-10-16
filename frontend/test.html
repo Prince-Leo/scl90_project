@@ -141,7 +141,7 @@
 }
 .opt.selected {
   border-color: var(--primary);
-  background: linear-gradient(180deg, #fff, #7ac7ff);
+  background: linear-gradient(180deg, #fff, #88b8ff);
 }
 .opt.selected .checkmark {
   opacity: 1;
@@ -295,10 +295,10 @@
 	text-align: center;
 }
 .table tbody td.red{
-	color: red;
+	color: #ff69b4;
 }
 .table tbody td.green{
-	color: green;
+	color: #a0e8b1;
 }
 .table tbody td:last-child {
 	border-right: 2px solid #eef2ff;
@@ -307,7 +307,7 @@
 .table tbody tr:not(.note-row) td:first-child{
 	background-color: rgba(36, 99, 255, 0.05);
 	color: #2463ff;
-	font-weight: bold;
+	font-weight: 600;
 	font-size: 15px;
 }
 
@@ -635,7 +635,7 @@
 			td.colSpan = 4;  // 跨越所有列
 
 			// 生成描述文本
-			const descriptionText = `<div style="text-align: justify; font-weight: bold; font-size: 15px; color: #2463ff;">说明：</div>根据全国正常人SCL-90常模（N=1388，1-5级评分，国内医院常用标准），当测试总分超过160分或阳性项目数超过43项时，可能存在一定的心理或情绪压力。<span style="font-weight:bold">您的测试总分为${overall_results.总分.A}分，阳性项目数为${overall_results.阳性项目数.A}项，综合结果显示您${overall_desc}，总体评估为${overall_flag}。按总症状指数，目前的测试评级为${overall_results.总症状指数.C}。</span>需要说明的是，SCL-90量表是一种辅助筛查工具，结果仅供参考，不能替代专业的心理或医学诊断。如有需要，可进一步咨询专业人士以获得更具体的指导和帮助。`;
+			const descriptionText = `<div style="text-align: justify; font-weight: 500; font-size: 15px; color: #2463ff;">说明：</div>根据全国正常人SCL-90常模（N=1388，1-5级评分，国内医院常用标准），当测试总分超过160分或阳性项目数超过43项时，可能存在一定的心理或情绪压力。<span style="color:#2463ff">您的测试总分为${overall_results.总分.A}分，阳性项目数为${overall_results.阳性项目数.A}项，综合结果显示您${overall_desc}，总体评估为${overall_flag}。按总症状指数，目前的测试评级为${overall_results.总症状指数.C}。</span>需要说明的是，SCL-90量表是一种辅助筛查工具，结果仅供参考，不能替代专业的心理或医学诊断。如有需要，可进一步咨询专业人士以获得更具体的指导和帮助。`;
 
 			td.innerHTML = descriptionText;
 			descriptionRow.appendChild(td);
@@ -692,7 +692,7 @@
 			td.colSpan = 5;  // 跨越所有列
 
 			// 生成描述文本
-			const descriptionText = `<div style="text-align: justify; font-weight: bold; font-size: 15px; color: #2463ff;">说明：</div>根据全国正常人SCL-90常模（N=1388，1-5级评分，国内医院常用标准），每个因子均分数值范围为1~5，参考结果是以因子均分得到。如果因子均分超过因子常模(M+SD,平均分+标准差)即表示筛查异常。由于量表只是辅助筛查工具，因此量表测试结果仅供参考。`;
+			const descriptionText = `<div style="text-align: justify; font-weight: 500; font-size: 15px; color: #2463ff;">说明：</div>根据全国正常人SCL-90常模（N=1388，1-5级评分，国内医院常用标准），每个因子均分数值范围为1~5，参考结果是以因子均分得到。如果因子均分超过因子常模(M+SD,平均分+标准差)即表示筛查异常。由于量表只是辅助筛查工具，因此量表测试结果仅供参考。`;
 
 			td.innerHTML = descriptionText;
 			descriptionRow.appendChild(td);
@@ -728,7 +728,7 @@
 				const row = document.createElement('tr');
 
 				const data = factor_results[name];
-				descs = `<span style="color:blue">你的得分为 ${data["总分"]}。</span>${factor_desc[name]}`;
+				descs = `<span style="color:#2463ff">你的得分为 ${data["总分"]}。</span>${factor_desc[name]}`;
 				[name, descs].forEach((text,index) => {
 					const td = document.createElement('td');
 					td.innerHTML = text;
