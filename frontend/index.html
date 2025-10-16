@@ -121,67 +121,67 @@
 			margin-bottom:12px;
 		}
 		.opts {
-  display: flex;
-  flex-direction: column;
-  gap: 10px;
-}
-.opt {
-  -webkit-tap-highlight-color: transparent;
-  position: relative;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 12px;
-  padding: 12px;
-  border-radius: 12px;
-  cursor: pointer;
-  background: #fbfdff;
-  border: 1px solid #eef2ff;
-  transition: all 0.25s ease;
-}
-.opt.selected {
-  border-color: var(--primary);
-  background: linear-gradient(180deg, #fff, #88b8ff);
-}
-.opt.selected .checkmark {
-  opacity: 1;
-  transform: translate(-50%, -50%) scale(1);
-}
+			display: flex;
+			flex-direction: column;
+			gap: 10px;
+		}
+		.opt {
+			-webkit-tap-highlight-color: transparent;
+			position: relative;
+			display: flex;
+			align-items: center;
+			justify-content: center;
+			gap: 12px;
+			padding: 12px;
+			border-radius: 12px;
+			cursor: pointer;
+			background: #fbfdff;
+			border: 1px solid #eef2ff;
+			transition: all 0.25s ease;
+		}
+		.opt.selected {
+			border-color: var(--primary);
+			background: linear-gradient(180deg, #fff, #88b8ff);
+		}
+		.opt.selected .checkmark {
+			opacity: 1;
+			transform: translate(-50%, -50%) scale(1);
+		}
 
-.opt .checkmark {
-  position: absolute;
-  right: 12px;
-  top: 50%;
-  transform: translate(-50%, -50%) scale(0.6);
-  opacity: 0;
-  font-size: 20px;
-  color: var(--primary);
-}
-.opt .checkmark::after{content: "✔"; }
-.opt.selected .tag {
-  background: var(--primary);
-  color: #fff;
-  border-color: var(--primary);
-}
+		.opt .checkmark {
+			position: absolute;
+			right: 12px;
+			top: 50%;
+			transform: translate(-50%, -50%) scale(0.6);
+			opacity: 0;
+			font-size: 20px;
+			color: var(--primary);
+		}
+		.opt .checkmark::after{content: "✔"; }
+		.opt.selected .tag {
+			background: var(--primary);
+			color: #fff;
+			border-color: var(--primary);
+		}
 
-.opt .tag {
-  min-width: 38px;
-  height: 38px;
-  border-radius: 10px;
-  background: #f1f5ff;
-  border: 1px solid #e6eeff;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-weight: 700;
-  color:var(--primary);
-}
+		.opt .tag {
+			min-width: 38px;
+			height: 38px;
+			border-radius: 10px;
+			background: #f1f5ff;
+			border: 1px solid #e6eeff;
+			display: flex;
+			align-items: center;
+			justify-content: center;
+			font-weight: 700;
+			color:var(--primary);
+		}
 
-.opt .text {
-  flex: 1;
-  font-size: 14px;
-  color: #111;
-}
+		.opt .text {
+			flex: 1;
+			font-size: 14px;
+			color: #111;
+		}
 		.controls{
 			display:flex;
 			gap:8px;
@@ -246,80 +246,80 @@
 			margin: 0 auto 12px;
 		}
 		.table {
-	border-collapse: separate; /* 必须，才能使用 border-radius */
-	border-spacing: 0;         /* 去掉间隙 */
-	font-size: 14px;
-	width: 100%;
-	border: none;              /* 表格外边框去掉 */
-	border-top: none;          /* 去掉上边框 */
-	margin-top: 8px;
-}
+			border-collapse: separate; /* 必须，才能使用 border-radius */
+			border-spacing: 0;         /* 去掉间隙 */
+			font-size: 14px;
+			width: 100%;
+			border: none;              /* 表格外边框去掉 */
+			border-top: none;          /* 去掉上边框 */
+			margin-top: 8px;
+		}
 
-.table thead th {
-	border-top: none;           /* 表头上边框去掉 */
-	border-left: none;          /* 表头左边框去掉 */
-	border-right: none;         /* 表头右边框去掉 */
-	border-bottom: 2px solid #eef2ff; /* 表头下边框去掉 */
-	background-color: rgba(36, 99, 255, 0.05);
-	padding: 8px;
-	font-size: 15px;
-	text-align: center;
-	font-weight: 600;
-	color: #2463ff;
-	min-width: 35px;
-}
+		.table thead th {
+			border-top: none;           /* 表头上边框去掉 */
+			border-left: none;          /* 表头左边框去掉 */
+			border-right: none;         /* 表头右边框去掉 */
+			border-bottom: 2px solid #eef2ff; /* 表头下边框去掉 */
+			background-color: rgba(36, 99, 255, 0.05);
+			padding: 8px;
+			font-size: 15px;
+			text-align: center;
+			font-weight: 600;
+			color: #2463ff;
+			min-width: 35px;
+		}
 
-/* 左上角圆角 */
-.table thead th:first-child {
-	border-top-left-radius: 12px;
-}
+		/* 左上角圆角 */
+		.table thead th:first-child {
+			border-top-left-radius: 12px;
+		}
 
-/* 右上角圆角 */
-.table thead th:last-child {
-	border-top-right-radius: 12px;
-}
+		/* 右上角圆角 */
+		.table thead th:last-child {
+			border-top-right-radius: 12px;
+		}
 
-.table tr:last-child td:first-child{
-	border-bottom-left-radius: 12px;
-}
-.table tr:last-child td:last-child{
-	border-bottom-right-radius: 12px;
-}
-/* 表体  td 边框 */
-.table tbody td {
-	border-top: none;          /* 表体和表头分隔线 */
-	border-bottom: 2px solid #eef2ff; /* 表体和表头分隔线 */
-	border-left: 2px solid #eef2ff;
-	border-right: none;
-	padding: 8px;
-	text-align: center;
-}
-.table tbody td.red{
-	color: #ff69b4;
-}
-.table tbody td.green{
-	color: #a0e8b1;
-}
-.table tbody td:last-child {
-	border-right: 2px solid #eef2ff;
-}
+		.table tr:last-child td:first-child{
+			border-bottom-left-radius: 12px;
+		}
+		.table tr:last-child td:last-child{
+			border-bottom-right-radius: 12px;
+		}
+		/* 表体  td 边框 */
+		.table tbody td {
+			border-top: none;          /* 表体和表头分隔线 */
+			border-bottom: 2px solid #eef2ff; /* 表体和表头分隔线 */
+			border-left: 2px solid #eef2ff;
+			border-right: none;
+			padding: 8px;
+			text-align: center;
+		}
+		.table tbody td.red{
+			color: #ff69b4;
+		}
+		.table tbody td.green{
+			color: #a0e8b1;
+		}
+		.table tbody td:last-child {
+			border-right: 2px solid #eef2ff;
+		}
 
-.table tbody tr:not(.note-row) td:first-child{
-	background-color: rgba(36, 99, 255, 0.05);
-	color: #2463ff;
-	font-weight: 600;
-	font-size: 15px;
-}
+		.table tbody tr:not(.note-row) td:first-child{
+			background-color: rgba(36, 99, 255, 0.05);
+			color: #2463ff;
+			font-weight: 600;
+			font-size: 15px;
+		}
 
-.table tbody tr.note-row td {
-	text-align: justify;
-	text-align-last: left;
-}
-.table tbody td.desc-cell{
-	text-align-last: left;
-	text-align: justify;
-}
-.table tbody tr:hover{background-color: #f6f9ff; }
+		.table tbody tr.note-row td {
+			text-align: justify;
+			text-align-last: left;
+		}
+		.table tbody td.desc-cell{
+			text-align-last: left;
+			text-align: justify;
+		}
+		.table tbody tr:hover{background-color: #f6f9ff; }
 		.small{
 			font-size:13px;
 			color:var(--muted);

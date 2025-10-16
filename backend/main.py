@@ -121,7 +121,6 @@ async def scl90_result(request: Request):
                 level = "中度"
             elif avg > 4 and avg <= 5:
                 level = "重度"
-            
             msd_value = MSD1.get(name, "-")
             factor_results[name] = {
                 "总分": total,
