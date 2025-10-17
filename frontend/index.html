@@ -21,6 +21,9 @@
 			font-family: "Helvetica Neue", Arial, sans-serif;
 			background:var(--bg);
 			color:#111;
+			-webkit-font-smoothing: antialiased; /* Mac / Chrome */
+			-moz-osx-font-smoothing: grayscale;  /* Firefox / macOS */
+			text-rendering: optimizeLegibility;  /* 提升可读性 */
 		}
 		header{
 			display:flex;
@@ -314,10 +317,12 @@
 		.table tbody tr.note-row td {
 			text-align: justify;
 			text-align-last: left;
+			line-height: 1.5;
 		}
 		.table tbody td.desc-cell{
 			text-align-last: left;
 			text-align: justify;
+			line-height: 1.5;
 		}
 		.table tbody tr:hover{background-color: #f6f9ff; }
 		.small{
