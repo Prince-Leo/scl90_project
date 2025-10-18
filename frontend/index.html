@@ -318,6 +318,7 @@
       text-align: justify;
       text-align-last: left;
       line-height: 1.5;
+      flex-shrink: 0;
     }
     .table tbody td.desc-cell{
       text-align-last: left;
@@ -585,8 +586,7 @@
         showResult();
         return;
       }
-      
-          wrongBox.style.display = 'none';
+      wrongBox.style.display = 'none';
       idx++;
       renderQuestion(idx);
     }
