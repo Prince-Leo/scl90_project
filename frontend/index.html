@@ -1,809 +1,809 @@
 <!DOCTYPE html>
 <html>
 <head>
-	<meta charset="utf-8">
-	<meta name="viewport" content="width=device-width, initial-scale=1">
-	<title>SCL-90 症状自测工具</title>
-	<style>
-		:root{
-			--bg:#f7f8fb;
-			--card:#ffffff;
-			--primary:#2463ff;
-			--muted:#6b7280;
-			--danger:#e02424;
-			--shadow: 0 6px 18px rgba(33,33,33,0.08);
-			--radius:14px;
-			--pad:16px;
-		}
-		html,body{
-			height:100%;
-			margin:0;
-			font-family: "Helvetica Neue", Arial, sans-serif;
-			background:var(--bg);
-			color:#111;
-			-webkit-font-smoothing: antialiased; /* Mac / Chrome */
-			-moz-osx-font-smoothing: grayscale;  /* Firefox / macOS */
-			text-rendering: optimizeLegibility;  /* 提升可读性 */
-		}
-		header{
-			display:flex;
-			align-items:center;
-			gap:12px;
-			margin-bottom:10px;
-		}
-		h1{
-			font-size:18px;
-			margin:0;
-		}
-		h2{
-			font-size: 18px;
-			font-weight: 700;
-			text-align: center;
-			margin-bottom: 16px;
-			background: linear-gradient(90deg, #2463ff, #7ac7ff);
-			-webkit-background-clip: text;
-			-webkit-text-fill-color: transparent;
-		}
-		h3{
-			font-size: 16px;
-			font-weight: 700;
-			color: var(--primary);
-			background: rgba(36, 99, 255, 0.08); /* 淡蓝背景 */
-			padding: 6px 12px;
-			border-radius: 8px;
-			display: inline-block;
-			margin: 24px 0 12px;
-			position: relative;
-			padding-left: 12px; 
-		}
-		h3::before{
-			content: "";
-			position: absolute;
-			left: 0;
-			top: 50%;
-			transform: translateY(-50%);
-			width: 4px;
-			height: 100%;
-			background: var(--primary);
-			border-radius: 2px;
-		}
-		p.lead{
-			margin:6px 0 0;
-			color:var(--muted);
-			font-size:13px;
-		}
-		.app{
-			max-width:780px;
-			margin:0 auto;
-			padding:12px;
-			box-sizing:border-box;
-		}
-		.card{
-			background:var(--card);
-			border-radius:16px;
-			padding:18px;
-			box-shadow:var(--shadow);
-			margin-bottom:12px;
-		}
-		.logo{
-			width:46px;
-			height:46px;
-			border-radius:10px;
-			background:linear-gradient(135deg,#2f7bff,#7ac7ff);
-			display:flex;
-			align-items:center;
-			justify-content:center;
-			color:#fff;
-			font-weight:700;
-			font-size:18px;
-		}
-		.progress-wrap{
-			height:8px;
-			background:#e6e9ef;
-			border-radius:999px;
-			margin-top:12px;
-			overflow:hidden;
-		}
-		.progress{
-			height:100%;
-			background:linear-gradient(90deg,var(--primary),#7ac7ff);
-			width:0%;
-			transition:width .25s ease;
-		}
-		.question-area{
-			padding:12px 4px;
-		}
-		.q-title{
-			font-size:16px;
-			font-weight:600;
-			margin-bottom:10px;
-		}
-		.q-sub{
-			color:var(--muted);
-			font-size:13px;
-			margin-bottom:12px;
-		}
-		.opts {
-			display: flex;
-			flex-direction: column;
-			gap: 10px;
-		}
-		.opt {
-			-webkit-tap-highlight-color: transparent;
-			position: relative;
-			display: flex;
-			align-items: center;
-			justify-content: center;
-			gap: 12px;
-			padding: 12px;
-			border-radius: 12px;
-			cursor: pointer;
-			background: #fbfdff;
-			border: 1px solid #eef2ff;
-			transition: all 0.25s ease;
-		}
-		.opt.selected {
-			border-color: var(--primary);
-			background: linear-gradient(180deg, #fff, #88b8ff);
-		}
-		.opt.selected .checkmark {
-			opacity: 1;
-			transform: translate(-50%, -50%) scale(1);
-		}
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>SCL-90 症状自测工具</title>
+  <style>
+    :root{
+      --bg:#f7f8fb;
+      --card:#ffffff;
+      --primary:#2463ff;
+      --muted:#6b7280;
+      --danger:#e02424;
+      --shadow: 0 6px 18px rgba(33,33,33,0.08);
+      --radius:14px;
+      --pad:16px;
+    }
+    html,body{
+      height:100%;
+      margin:0;
+      font-family: "Helvetica Neue", Arial, sans-serif;
+      background:var(--bg);
+      color:#111;
+      -webkit-font-smoothing: antialiased; /* Mac / Chrome */
+      -moz-osx-font-smoothing: grayscale;  /* Firefox / macOS */
+      text-rendering: optimizeLegibility;  /* 提升可读性 */
+    }
+    header{
+      display:flex;
+      align-items:center;
+      gap:12px;
+      margin-bottom:10px;
+    }
+    h1{
+      font-size:18px;
+      margin:0;
+    }
+    h2{
+      font-size: 18px;
+      font-weight: 700;
+      text-align: center;
+      margin-bottom: 16px;
+      background: linear-gradient(90deg, #2463ff, #7ac7ff);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+    h3{
+      font-size: 16px;
+      font-weight: 700;
+      color: var(--primary);
+      background: rgba(36, 99, 255, 0.08); /* 淡蓝背景 */
+      padding: 6px 12px;
+      border-radius: 8px;
+      display: inline-block;
+      margin: 24px 0 12px;
+      position: relative;
+      padding-left: 12px; 
+    }
+    h3::before{
+      content: "";
+      position: absolute;
+      left: 0;
+      top: 50%;
+      transform: translateY(-50%);
+      width: 4px;
+      height: 100%;
+      background: var(--primary);
+      border-radius: 2px;
+    }
+    p.lead{
+      margin:6px 0 0;
+      color:var(--muted);
+      font-size:13px;
+    }
+    .app{
+      max-width:780px;
+      margin:0 auto;
+      padding:12px;
+      box-sizing:border-box;
+    }
+    .card{
+      background:var(--card);
+      border-radius:16px;
+      padding:18px;
+      box-shadow:var(--shadow);
+      margin-bottom:12px;
+    }
+    .logo{
+      width:46px;
+      height:46px;
+      border-radius:10px;
+      background:linear-gradient(135deg,#2f7bff,#7ac7ff);
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      color:#fff;
+      font-weight:700;
+      font-size:18px;
+    }
+    .progress-wrap{
+      height:8px;
+      background:#e6e9ef;
+      border-radius:999px;
+      margin-top:12px;
+      overflow:hidden;
+    }
+    .progress{
+      height:100%;
+      background:linear-gradient(90deg,var(--primary),#7ac7ff);
+      width:0%;
+      transition:width .25s ease;
+    }
+    .question-area{
+      padding:12px 4px;
+    }
+    .q-title{
+      font-size:16px;
+      font-weight:600;
+      margin-bottom:10px;
+    }
+    .q-sub{
+      color:var(--muted);
+      font-size:13px;
+      margin-bottom:12px;
+    }
+    .opts {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+    .opt {
+      -webkit-tap-highlight-color: transparent;
+      position: relative;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 12px;
+      padding: 12px;
+      border-radius: 12px;
+      cursor: pointer;
+      background: #fbfdff;
+      border: 1px solid #eef2ff;
+      transition: all 0.25s ease;
+    }
+    .opt.selected {
+      border-color: var(--primary);
+      background: linear-gradient(180deg, #fff, #88b8ff);
+    }
+    .opt.selected .checkmark {
+      opacity: 1;
+      transform: translate(-50%, -50%) scale(1);
+    }
 
-		.opt .checkmark {
-			position: absolute;
-			right: 12px;
-			top: 50%;
-			transform: translate(-50%, -50%) scale(0.6);
-			opacity: 0;
-			font-size: 20px;
-			color: var(--primary);
-		}
-		.opt .checkmark::after{content: "✔"; }
-		.opt.selected .tag {
-			background: var(--primary);
-			color: #fff;
-			border-color: var(--primary);
-		}
+    .opt .checkmark {
+      position: absolute;
+      right: 12px;
+      top: 50%;
+      transform: translate(-50%, -50%) scale(0.6);
+      opacity: 0;
+      font-size: 20px;
+      color: var(--primary);
+    }
+    .opt .checkmark::after{content: "✔"; }
+    .opt.selected .tag {
+      background: var(--primary);
+      color: #fff;
+      border-color: var(--primary);
+    }
 
-		.opt .tag {
-			min-width: 38px;
-			height: 38px;
-			border-radius: 10px;
-			background: #f1f5ff;
-			border: 1px solid #e6eeff;
-			display: flex;
-			align-items: center;
-			justify-content: center;
-			font-weight: 700;
-			color:var(--primary);
-		}
+    .opt .tag {
+      min-width: 38px;
+      height: 38px;
+      border-radius: 10px;
+      background: #f1f5ff;
+      border: 1px solid #e6eeff;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 700;
+      color:var(--primary);
+    }
 
-		.opt .text {
-			flex: 1;
-			font-size: 14px;
-			color: #111;
-		}
-		.controls{
-			display:flex;
-			gap:8px;
-			justify-content:space-between;
-			align-items:center;
-			margin-top:14px;
-		}
-		.btn{
-			padding:10px 14px;
-			border-radius:12px;
-			border:0;
-			cursor:pointer;
-			font-weight:600;
-		}
-		.btn.ghost{
-			background:transparent;
-			border:1px solid #dbe7ff;
-			color:var(--primary);
-		}
-		.btn.primary{
-			background:var(--primary);
-			color:#fff;
-			box-shadow:0 8px 22px rgba(36,99,255,0.12);
-		}
-		.wrongbox{
-			margin-top: 8px;
-			display: inline-block;
-			background-color: rgba(255,192,203,0.15);
-			font-size: 14px;
-			font-weight: 600;
-			color: #FF69B4;
-			padding: 5px 10px;
-			border-radius: 10px;
-			border: 1px solid rgba(255,105,180,0.5);
-		}
-		.muted{
-			color:var(--muted);
-			font-size:13px;
-		}
-		.loading-bar-container{
-			display: none;
-			width: 80%;
-			height: 8px;
-			background: #eee;
-			border-radius: 4px;
-			margin: 10px auto;
-			overflow: hidden; /* 防止进度条超出边框圆角 */
-		}
-		.loading-bar{
-			width: 0%;
-			height: 100%;
-			background: var(--primary, #2463ff);
-			border-radius: 4px;
-			transition: width 0.3s ease;
-		}
-		/* 蓝色分割线 */
-		.divider{
-			width: 60px;
-			height: 3px;
-			background: var(--primary);
-			border-radius: 3px;
-			margin: 0 auto 12px;
-		}
-		.table {
-			border-collapse: separate; /* 必须，才能使用 border-radius */
-			border-spacing: 0;         /* 去掉间隙 */
-			font-size: 14px;
-			width: 100%;
-			border: none;              /* 表格外边框去掉 */
-			border-top: none;          /* 去掉上边框 */
-			margin-top: 8px;
-		}
+    .opt .text {
+      flex: 1;
+      font-size: 14px;
+      color: #111;
+    }
+    .controls{
+      display:flex;
+      gap:8px;
+      justify-content:space-between;
+      align-items:center;
+      margin-top:14px;
+    }
+    .btn{
+      padding:10px 14px;
+      border-radius:12px;
+      border:0;
+      cursor:pointer;
+      font-weight:600;
+    }
+    .btn.ghost{
+      background:transparent;
+      border:1px solid #dbe7ff;
+      color:var(--primary);
+    }
+    .btn.primary{
+      background:var(--primary);
+      color:#fff;
+      box-shadow:0 8px 22px rgba(36,99,255,0.12);
+    }
+    .wrongbox{
+      margin-top: 8px;
+      display: inline-block;
+      background-color: rgba(255,192,203,0.15);
+      font-size: 14px;
+      font-weight: 600;
+      color: #FF69B4;
+      padding: 5px 10px;
+      border-radius: 10px;
+      border: 1px solid rgba(255,105,180,0.5);
+    }
+    .muted{
+      color:var(--muted);
+      font-size:13px;
+    }
+    .loading-bar-container{
+      display: none;
+      width: 80%;
+      height: 8px;
+      background: #eee;
+      border-radius: 4px;
+      margin: 10px auto;
+      overflow: hidden; /* 防止进度条超出边框圆角 */
+    }
+    .loading-bar{
+      width: 0%;
+      height: 100%;
+      background: var(--primary, #2463ff);
+      border-radius: 4px;
+      transition: width 0.3s ease;
+    }
+    /* 蓝色分割线 */
+    .divider{
+      width: 60px;
+      height: 3px;
+      background: var(--primary);
+      border-radius: 3px;
+      margin: 0 auto 12px;
+    }
+    .table {
+      border-collapse: separate; /* 必须，才能使用 border-radius */
+      border-spacing: 0;         /* 去掉间隙 */
+      font-size: 14px;
+      width: 100%;
+      border: none;              /* 表格外边框去掉 */
+      border-top: none;          /* 去掉上边框 */
+      margin-top: 8px;
+    }
 
-		.table thead th {
-			border-top: none;           /* 表头上边框去掉 */
-			border-left: none;          /* 表头左边框去掉 */
-			border-right: none;         /* 表头右边框去掉 */
-			border-bottom: 2px solid #eef2ff; /* 表头下边框去掉 */
-			background-color: rgba(36, 99, 255, 0.05);
-			padding: 8px;
-			font-size: 15px;
-			text-align: center;
-			font-weight: 600;
-			color: #2463ff;
-			min-width: 35px;
-		}
+    .table thead th {
+      border-top: none;           /* 表头上边框去掉 */
+      border-left: none;          /* 表头左边框去掉 */
+      border-right: none;         /* 表头右边框去掉 */
+      border-bottom: 2px solid #eef2ff; /* 表头下边框去掉 */
+      background-color: rgba(36, 99, 255, 0.05);
+      padding: 8px;
+      font-size: 15px;
+      text-align: center;
+      font-weight: 600;
+      color: #2463ff;
+      min-width: 35px;
+    }
 
-		/* 左上角圆角 */
-		.table thead th:first-child {
-			border-top-left-radius: 12px;
-		}
+    /* 左上角圆角 */
+    .table thead th:first-child {
+      border-top-left-radius: 12px;
+    }
 
-		/* 右上角圆角 */
-		.table thead th:last-child {
-			border-top-right-radius: 12px;
-		}
+    /* 右上角圆角 */
+    .table thead th:last-child {
+      border-top-right-radius: 12px;
+    }
 
-		.table tr:last-child td:first-child{
-			border-bottom-left-radius: 12px;
-		}
-		.table tr:last-child td:last-child{
-			border-bottom-right-radius: 12px;
-		}
-		/* 表体  td 边框 */
-		.table tbody td {
-			border-top: none;          /* 表体和表头分隔线 */
-			border-bottom: 2px solid #eef2ff; /* 表体和表头分隔线 */
-			border-left: 2px solid #eef2ff;
-			border-right: none;
-			padding: 8px;
-			text-align: center;
-		}
-		.table tbody td.red{
-			color: #ff69b4;
-		}
-		.table tbody td.green{
-			color: #a0e8b1;
-		}
-		.table tbody td:last-child {
-			border-right: 2px solid #eef2ff;
-		}
+    .table tr:last-child td:first-child{
+      border-bottom-left-radius: 12px;
+    }
+    .table tr:last-child td:last-child{
+      border-bottom-right-radius: 12px;
+    }
+    /* 表体  td 边框 */
+    .table tbody td {
+      border-top: none;          /* 表体和表头分隔线 */
+      border-bottom: 2px solid #eef2ff; /* 表体和表头分隔线 */
+      border-left: 2px solid #eef2ff;
+      border-right: none;
+      padding: 8px;
+      text-align: center;
+    }
+    .table tbody td.red{
+      color: #ff69b4;
+    }
+    .table tbody td.green{
+      color: #a0e8b1;
+    }
+    .table tbody td:last-child {
+      border-right: 2px solid #eef2ff;
+    }
 
-		.table tbody tr:not(.note-row) td:first-child{
-			background-color: rgba(36, 99, 255, 0.05);
-			color: #2463ff;
-			font-weight: 600;
-			font-size: 15px;
-		}
+    .table tbody tr:not(.note-row) td:first-child{
+      background-color: rgba(36, 99, 255, 0.05);
+      color: #2463ff;
+      font-weight: 600;
+      font-size: 15px;
+    }
 
-		.table tbody tr.note-row td {
-			text-align: justify;
-			text-align-last: left;
-			line-height: 1.5;
-		}
-		.table tbody td.desc-cell{
-			text-align-last: left;
-			text-align: justify;
-			line-height: 1.5;
-		}
-		.table tbody tr:hover{background-color: #f6f9ff; }
-		.small{
-			font-size:13px;
-			color:var(--muted);
-		}
-		footer.small-note{
-			font-size:12px;
-			color:var(--muted);
-			text-align:center;
-			padding:12px;
-		}
-		@media (max-width:420px){
-			.app{padding:10px}
-			.card{padding:14px;border-radius:12px}
-			.logo{width:44px;height:44px}
-			h1{font-size:16px}
-		}
-	</style>
+    .table tbody tr.note-row td {
+      text-align: justify;
+      text-align-last: left;
+      line-height: 1.5;
+    }
+    .table tbody td.desc-cell{
+      text-align-last: left;
+      text-align: justify;
+      line-height: 1.5;
+    }
+    .table tbody tr:hover{background-color: #f6f9ff; }
+    .small{
+      font-size:13px;
+      color:var(--muted);
+    }
+    footer.small-note{
+      font-size:12px;
+      color:var(--muted);
+      text-align:center;
+      padding:12px;
+    }
+    @media (max-width:420px){
+      .app{padding:10px}
+      .card{padding:14px;border-radius:12px}
+      .logo{width:44px;height:44px}
+      h1{font-size:16px}
+    }
+  </style>
 </head>
 <body>
-	<div class="app">
-		<div class="card">
-			<header>
-				<div class="logo">S90</div>
-				<div>
-					<h1>SCL-90 症状自评量表</h1>
-					<p class="lead">请根据最近一周的实际感觉，选择最符合自己的选项。</p>
-				</div>
-			</header>
+  <div class="app">
+    <div class="card">
+      <header>
+        <div class="logo">S90</div>
+        <div>
+          <h1>SCL-90 症状自评量表</h1>
+          <p class="lead">请根据最近一周的实际感觉，选择最符合自己的选项。</p>
+        </div>
+      </header>
 
-			<div class="progress-wrap" aria-hidden="true">
-				<div id="progress" class="progress"></div>
-			</div>
+      <div class="progress-wrap" aria-hidden="true">
+        <div id="progress" class="progress"></div>
+      </div>
 
-			<div class="question-area" id="questionArea">
-				<!--插入问题-->
-			</div>
+      <div class="question-area" id="questionArea">
+        <!--插入问题-->
+      </div>
 
-			<div class="controls">
-				<div>
-					<button id="prevBtn" class="btn ghost" aria-label="上一步">上一步</button>
-					<button id="nextBtn" class="btn primary" aria-label="下一步">下一步</button>
-				</div>
+      <div class="controls">
+        <div>
+          <button id="prevBtn" class="btn ghost" aria-label="上一步">上一步</button>
+          <button id="nextBtn" class="btn primary" aria-label="下一步">下一步</button>
+        </div>
 
-				<div>
-					<div style="text-align:right">
-						<div class="muted">题 <span id="curIdx">1</span> / 90</div>
-						<div class="muted small" style="display:none">进度：<span id="percent">0%</span></div>
-					</div>
-				</div>
-			</div>
-			<div class="wrongbox" id="wrongBox" style="display:none">请选择一个选项后再继续</div>
-		</div>
+        <div>
+          <div style="text-align:right">
+            <div class="muted">题 <span id="curIdx">1</span> / 90</div>
+            <div class="muted small" style="display:none">进度：<span id="percent">0%</span></div>
+          </div>
+        </div>
+      </div>
+      <div class="wrongbox" id="wrongBox" style="display:none">请选择一个选项后再继续</div>
+    </div>
 
-		<div id="resultCard" class="card" style="display:none">
-			<div id="loadingBarContainer" class="loading-bar-container">
-				<div id="loadingBar" class="loading-bar"></div>
-			</div>
-			<div id="resultContainer" style="display:none">
-				<h2>SCL-90 量表测评结果报告</h2>
-				<div class="divider"></div>
-				<h3>总体情况</h3>
-				<div id="overallTableContainer"></div>
-				<h3>各因子分析</h3>
-				<div id="factorTableContainer"></div>
-				<h3>结果说明</h3>
-				<div id="factorDescContainer"></div>
-			</div>
+    <div id="resultCard" class="card" style="display:none">
+      <div id="loadingBarContainer" class="loading-bar-container">
+        <div id="loadingBar" class="loading-bar"></div>
+      </div>
+      <div id="resultContainer" style="display:none">
+        <h2>SCL-90 量表测评结果报告</h2>
+        <div class="divider"></div>
+        <h3>总体情况</h3>
+        <div id="overallTableContainer"></div>
+        <h3>各因子分析</h3>
+        <div id="factorTableContainer"></div>
+        <h3>结果说明</h3>
+        <div id="factorDescContainer"></div>
+      </div>
 
-			<div style="display:flex;gap:8px;margin-top:12px">
-				<button id="restart" class="btn primary">重新作答</button>
-			</div>
-		</div>
+      <div style="display:flex;gap:8px;margin-top:12px">
+        <button id="restart" class="btn primary">重新作答</button>
+      </div>
+    </div>
 
-		<div class="card small" style="margin-top:8px">
-			<strong>温馨提示：</strong> 本量表仅作为自我评估工具，结果仅供参考，不能替代专业诊断或治疗。如果您在测评过程中或测评结果显示可能存在心理健康问题，请及时寻求医院或专业心理咨询人员的帮助。
-		</div>
+    <div class="card small" style="margin-top:8px">
+      <strong>温馨提示：</strong> 本量表仅作为自我评估工具，结果仅供参考，不能替代专业诊断或治疗。如果您在测评过程中或测评结果显示可能存在心理健康问题，请及时寻求医院或专业心理咨询人员的帮助。
+    </div>
 
-		<footer class="small-note">版本：移动端1.0</footer>
-	</div>
+    <footer class="small-note">版本：移动端1.0</footer>
+  </div>
 
-	<script>
-		const QUESTIONS = [
-			"头痛",
-			"神经过敏，心中不踏实",
-			"头脑中有不必要的想法或字句盘旋",
-			"头昏或昏倒",
-			"对异性的兴趣减弱",
-			"对旁人责备求全",
-			"感到别人能控制你的思想",
-			"责怪别人制造麻烦",
-			"忘性大",
-			"担心自己的服饰整齐或仪表的端正",
-			"容易烦恼和激动",
-			"胸痛",
-			"害怕空旷的场所或街道",
-			"感到自己的精力下降，活动减弱",
-			"想结束自己的生命",
-			"听到旁人听不到的声音",
-			"发抖",
-			"感到大多数人都不可信任",
-			"胃口不好",
-			"容易哭泣",
-			"同异性相处时感到害羞不自在",
-			"感到受骗，中了圈套或有人想抓住你",
-			"无缘无故地突然感到害怕",
-			"自己不能控制的大发脾气",
-			"怕单独出门",
-			"经常责怪自己",
-			"腰痛",
-			"感到难以完成任务",
-			"感到孤独",
-			"感到苦闷",
-			"过分担忧",
-			"对事物不感兴趣",
-			"感到害怕",
-			"你的感情容易受到伤害",
-			"旁人能知道你的私下的想法",
-			"感到别人不理解你、不同情你",
-			"感到别人对你不友好、不喜欢你",
-			"做事必须做得很慢以保证做得正确",
-			"心跳得很厉害",
-			"恶心或胃部不舒服",
-			"感到比不上他人",
-			"肌肉酸痛",
-			"感到有人在监视你、谈论你",
-			"难以入睡",
-			"做事必须反复检查",
-			"难以做出决定",
-			"怕乘电车、公共汽车、地铁或火车",
-			"呼吸有困难",
-			"一阵阵发冷或发热",
-			"因为感到害怕而避开某些东西、场合或活动",
-			"脑子变空了",
-			"身体发麻或刺痛",
-			"喉咙有梗塞感",
-			"感到前途没有希望",
-			"不能集中注意",
-			"感到身体的某一部分软弱无力",
-			"感到紧张或容易紧张",
-			"感到手或脚发重",
-			"想到死亡的事",
-			"吃得太多",
-			"当别人看着您或谈论您时感到不自在",
-			"有一些不属于您自己的想法",
-			"有想打人或伤害他人的冲动",
-			"早醒",
-			"必须反复洗手、点数",
-			"睡得不稳不深",
-			"有想摔坏或破坏东西的想法",
-			"有一些别人没有的想法",
-			"对别人小心谨慎",
-			"在公共场所感到不自在",
-			"感到任何事情都很困难",
-			"一阵阵恐惧或惊恐",
-			"感到公共场合吃东西很不舒服",
-			"经常与人争论",
-			"单独一人时神经很紧张",
-			"别人对你的成绩没有作出恰当的评价",
-			"即使和别人在一起也感到孤单",
-			"感到坐立不安心神不定",
-			"感到自己没有什么价值",
-			"感到熟悉的东西变成陌生或不像是真的",
-			"大叫或摔东西",
-			"害怕会在公共场合昏倒",
-			"感到别人想占你的便宜",
-			"为一些有关性的想法而很苦恼",
-			"你认为应该因为自己的过错而受到惩罚",
-			"感到要很快把事情做完",
-			"感到自己的身体有严重问题",
-			"从未感到和其他人很亲近",
-			"感到自己有罪",
-			"感到自己的脑子有毛病"
-		];
+  <script>
+    const QUESTIONS = [
+      "头痛",
+      "神经过敏，心中不踏实",
+      "头脑中有不必要的想法或字句盘旋",
+      "头昏或昏倒",
+      "对异性的兴趣减弱",
+      "对旁人责备求全",
+      "感到别人能控制你的思想",
+      "责怪别人制造麻烦",
+      "忘性大",
+      "担心自己的服饰整齐或仪表的端正",
+      "容易烦恼和激动",
+      "胸痛",
+      "害怕空旷的场所或街道",
+      "感到自己的精力下降，活动减弱",
+      "想结束自己的生命",
+      "听到旁人听不到的声音",
+      "发抖",
+      "感到大多数人都不可信任",
+      "胃口不好",
+      "容易哭泣",
+      "同异性相处时感到害羞不自在",
+      "感到受骗，中了圈套或有人想抓住你",
+      "无缘无故地突然感到害怕",
+      "自己不能控制的大发脾气",
+      "怕单独出门",
+      "经常责怪自己",
+      "腰痛",
+      "感到难以完成任务",
+      "感到孤独",
+      "感到苦闷",
+      "过分担忧",
+      "对事物不感兴趣",
+      "感到害怕",
+      "你的感情容易受到伤害",
+      "旁人能知道你的私下的想法",
+      "感到别人不理解你、不同情你",
+      "感到别人对你不友好、不喜欢你",
+      "做事必须做得很慢以保证做得正确",
+      "心跳得很厉害",
+      "恶心或胃部不舒服",
+      "感到比不上他人",
+      "肌肉酸痛",
+      "感到有人在监视你、谈论你",
+      "难以入睡",
+      "做事必须反复检查",
+      "难以做出决定",
+      "怕乘电车、公共汽车、地铁或火车",
+      "呼吸有困难",
+      "一阵阵发冷或发热",
+      "因为感到害怕而避开某些东西、场合或活动",
+      "脑子变空了",
+      "身体发麻或刺痛",
+      "喉咙有梗塞感",
+      "感到前途没有希望",
+      "不能集中注意",
+      "感到身体的某一部分软弱无力",
+      "感到紧张或容易紧张",
+      "感到手或脚发重",
+      "想到死亡的事",
+      "吃得太多",
+      "当别人看着您或谈论您时感到不自在",
+      "有一些不属于您自己的想法",
+      "有想打人或伤害他人的冲动",
+      "早醒",
+      "必须反复洗手、点数",
+      "睡得不稳不深",
+      "有想摔坏或破坏东西的想法",
+      "有一些别人没有的想法",
+      "对别人小心谨慎",
+      "在公共场所感到不自在",
+      "感到任何事情都很困难",
+      "一阵阵恐惧或惊恐",
+      "感到公共场合吃东西很不舒服",
+      "经常与人争论",
+      "单独一人时神经很紧张",
+      "别人对你的成绩没有作出恰当的评价",
+      "即使和别人在一起也感到孤单",
+      "感到坐立不安心神不定",
+      "感到自己没有什么价值",
+      "感到熟悉的东西变成陌生或不像是真的",
+      "大叫或摔东西",
+      "害怕会在公共场合昏倒",
+      "感到别人想占你的便宜",
+      "为一些有关性的想法而很苦恼",
+      "你认为应该因为自己的过错而受到惩罚",
+      "感到要很快把事情做完",
+      "感到自己的身体有严重问题",
+      "从未感到和其他人很亲近",
+      "感到自己有罪",
+      "感到自己的脑子有毛病"
+    ];
 
-		const OPTIONS = [
-			{label:'A',text:'没有',val:1},
-			{label:'B',text:'很轻',val:2},
-			{label:'C',text:'中等',val:3},
-			{label:'D',text:'偏重',val:4},
-			{label:'E',text:'严重',val:5}
-		];
+    const OPTIONS = [
+      {label:'A',text:'没有',val:1},
+      {label:'B',text:'很轻',val:2},
+      {label:'C',text:'中等',val:3},
+      {label:'D',text:'偏重',val:4},
+      {label:'E',text:'严重',val:5}
+    ];
 
-		let answers = new Array(QUESTIONS.length).fill(null);
-		let idx = 0;
+    let answers = new Array(QUESTIONS.length).fill(null);
+    let idx = 0;
 
-		const qArea = document.getElementById('questionArea');
-		const progress = document.getElementById('progress');
-		const curIdx = document.getElementById('curIdx');
-		const percent = document.getElementById('percent');
-		const prevBtn = document.getElementById('prevBtn');
-		const nextBtn = document.getElementById('nextBtn');
-		const wrongBox = document.getElementById('wrongBox');
-		const resultCard = document.getElementById('resultCard');
-		const loadingBarContainer = document.getElementById("loadingBarContainer");
-		const loadingBar = document.getElementById("loadingBar");
-		const resultContainer = document.getElementById("resultContainer");
-		const restartBtn = document.getElementById('restart');
+    const qArea = document.getElementById('questionArea');
+    const progress = document.getElementById('progress');
+    const curIdx = document.getElementById('curIdx');
+    const percent = document.getElementById('percent');
+    const prevBtn = document.getElementById('prevBtn');
+    const nextBtn = document.getElementById('nextBtn');
+    const wrongBox = document.getElementById('wrongBox');
+    const resultCard = document.getElementById('resultCard');
+    const loadingBarContainer = document.getElementById("loadingBarContainer");
+    const loadingBar = document.getElementById("loadingBar");
+    const resultContainer = document.getElementById("resultContainer");
+    const restartBtn = document.getElementById('restart');
 
-		function renderQuestion(i){
-			const q = QUESTIONS[i];
-			qArea.innerHTML = '';
-			const title = document.createElement('div');
-			title.className = 'q-title';
-			title.textContent = q;
-			qArea.appendChild(title);
-			const sub = document.createElement('div');
-			sub.className = 'q-sub';
-			sub.textContent = '选择最符合你最近一周情况的答案';
-			qArea.appendChild(sub);
+    function renderQuestion(i){
+      const q = QUESTIONS[i];
+      qArea.innerHTML = '';
+      const title = document.createElement('div');
+      title.className = 'q-title';
+      title.textContent = q;
+      qArea.appendChild(title);
+      const sub = document.createElement('div');
+      sub.className = 'q-sub';
+      sub.textContent = '选择最符合你最近一周情况的答案';
+      qArea.appendChild(sub);
 
-			const optsWrap = document.createElement('div');
-			optsWrap.className = 'opts';
-			OPTIONS.forEach(opt=>{
-				const el = document.createElement('label');
-				el.className = 'opt';
-				el.tabIndex = 0;
-				el.setAttribute('data-val',opt.val);
-				el.innerHTML = `<div class="tag">${opt.label}</div><div class="text">${opt.text}</div><div class="checkmark"></div>`;
-				// 选中效果
-				if (answers[i] === opt.val) el.classList.add('selected');
-				el.onclick = ()=>{
-					answers[i] = opt.val;
-					// 刷新当前选项样式
-					Array.from(optsWrap.children).forEach(ch=>ch.classList.remove('selected'));
-					el.classList.add('selected');
-					setTimeout(() => {
-				        if (answers[i] !== null) {
-				            goNext();
-				        }
-				    }, 150);
-				};
-				el.onkeydown = (e)=>{
-					if(e.key === 'Enter' || e.key === ' '){ el.click(); e.preventDefault(); }
-				}
-				optsWrap.appendChild(el);
-			});
-			qArea.appendChild(optsWrap);
+      const optsWrap = document.createElement('div');
+      optsWrap.className = 'opts';
+      OPTIONS.forEach(opt=>{
+        const el = document.createElement('label');
+        el.className = 'opt';
+        el.tabIndex = 0;
+        el.setAttribute('data-val',opt.val);
+        el.innerHTML = `<div class="tag">${opt.label}</div><div class="text">${opt.text}</div><div class="checkmark"></div>`;
+        // 选中效果
+        if (answers[i] === opt.val) el.classList.add('selected');
+        el.onclick = ()=>{
+          answers[i] = opt.val;
+          // 刷新当前选项样式
+          Array.from(optsWrap.children).forEach(ch=>ch.classList.remove('selected'));
+          el.classList.add('selected');
+          setTimeout(() => {
+                if (answers[i] !== null) {
+                    goNext();
+                }
+            }, 150);
+        };
+        el.onkeydown = (e)=>{
+          if(e.key === 'Enter' || e.key === ' '){ el.click(); e.preventDefault(); }
+        }
+        optsWrap.appendChild(el);
+      });
+      qArea.appendChild(optsWrap);
 
-			// 更新进度显示
-			curIdx.textContent = i+1;
-			const pct = Math.round(((i+1)/QUESTIONS.length)*100);
-			percent.textContent = pct + '%';
-			progress.style.width = pct + '%';
+      // 更新进度显示
+      curIdx.textContent = i+1;
+      const pct = Math.round(((i+1)/QUESTIONS.length)*100);
+      percent.textContent = pct + '%';
+      progress.style.width = pct + '%';
 
-			// 控制按钮显示
-			prevBtn.style.display = i===0 ? 'none' : 'inline-block';
-			nextBtn.textContent = (i === QUESTIONS.length-1) ? '完成并提交' : '下一步';
-		}
+      // 控制按钮显示
+      prevBtn.style.display = i===0 ? 'none' : 'inline-block';
+      nextBtn.textContent = (i === QUESTIONS.length-1) ? '完成并提交' : '下一步';
+    }
 
-		function goNext(){
-			// 如果当前题目没有选择答案
-			if (answers[idx] === null) {
-				wrongBox.style.display = 'inline-block'; // 显示提示
-				return; // 不跳到下一题
-			}
-			// 如果最后一题：提交
-			if (idx === QUESTIONS.length-1){
-				showResult();
-				return;
-			}
-			
-        	wrongBox.style.display = 'none';
-			idx++;
-			renderQuestion(idx);
-		}
+    function goNext(){
+      // 如果当前题目没有选择答案
+      if (answers[idx] === null) {
+        wrongBox.style.display = 'inline-block'; // 显示提示
+        return; // 不跳到下一题
+      }
+      // 如果最后一题：提交
+      if (idx === QUESTIONS.length-1){
+        showResult();
+        return;
+      }
+      
+          wrongBox.style.display = 'none';
+      idx++;
+      renderQuestion(idx);
+    }
 
-		function goPrev(){
-			if(idx>0){ idx--; renderQuestion(idx); }
-		}
+    function goPrev(){
+      if(idx>0){ idx--; renderQuestion(idx); }
+    }
 
-		function renderOverallTable(overall_results, overall_desc, overall_flag) {
-			const container = document.getElementById('overallTableContainer');
-			container.innerHTML = ''; // 清空
+    function renderOverallTable(overall_results, overall_desc, overall_flag) {
+      const container = document.getElementById('overallTableContainer');
+      container.innerHTML = ''; // 清空
 
-			const table = document.createElement('table');
-			table.className = 'table';
+      const table = document.createElement('table');
+      table.className = 'table';
 
-			// 表头
-			const thead = document.createElement('thead');
-			const headerRow = document.createElement('tr');
+      // 表头
+      const thead = document.createElement('thead');
+      const headerRow = document.createElement('tr');
 
-			['项目', '得分', '参考', '结果'].forEach(text => {
-				const th = document.createElement('th');
-				th.textContent = text;
-				headerRow.appendChild(th);
-			});
-			thead.appendChild(headerRow);
-			table.appendChild(thead);
+      ['项目', '得分', '参考', '结果'].forEach(text => {
+        const th = document.createElement('th');
+        th.textContent = text;
+        headerRow.appendChild(th);
+      });
+      thead.appendChild(headerRow);
+      table.appendChild(thead);
 
-			// 表体
-			const tbody = document.createElement('tbody');
-			for (const name in overall_results) {
-				const row = document.createElement('tr');
-				const data = overall_results[name];
-				[name, data["A"], data["B"], data["C"]].forEach((text, index) => {
-					const td = document.createElement('td');
-					td.textContent = text;
-					if (index === 3){
-						if (text === "阴性" || text === "正常")
-							td.classList.add("green");
-						else
-							td.classList.add("red");
-					}	
-					row.appendChild(td);
-				});
-				tbody.appendChild(row);
-			}
+      // 表体
+      const tbody = document.createElement('tbody');
+      for (const name in overall_results) {
+        const row = document.createElement('tr');
+        const data = overall_results[name];
+        [name, data["A"], data["B"], data["C"]].forEach((text, index) => {
+          const td = document.createElement('td');
+          td.textContent = text;
+          if (index === 3){
+            if (text === "阴性" || text === "正常")
+              td.classList.add("green");
+            else
+              td.classList.add("red");
+          }  
+          row.appendChild(td);
+        });
+        tbody.appendChild(row);
+      }
 
-			// 添加描述行
-			const descriptionRow = document.createElement('tr');
-			descriptionRow.className = 'note-row';
-			const td = document.createElement('td');
-			td.colSpan = 4;  // 跨越所有列
+      // 添加描述行
+      const descriptionRow = document.createElement('tr');
+      descriptionRow.className = 'note-row';
+      const td = document.createElement('td');
+      td.colSpan = 4;  // 跨越所有列
 
-			// 生成描述文本
-			const descriptionText = `<div style="text-align: justify; font-weight: 500; font-size: 15px; color: #2463ff;">说明：</div>根据全国正常人SCL-90常模（N=1388，1-5级评分，国内医院常用标准），当测试总分超过160分或阳性项目数超过43项时，可能存在一定的心理或情绪压力。<span style="color:#2463ff">您的测试总分为${overall_results.总分.A}分，阳性项目数为${overall_results.阳性项目数.A}项，综合结果显示您${overall_desc}，总体评估为${overall_flag}。按总症状指数，目前的测试评级为${overall_results.总症状指数.C}。</span>需要说明的是，SCL-90量表是一种辅助筛查工具，结果仅供参考，不能替代专业的心理或医学诊断。如有需要，可进一步咨询专业人士以获得更具体的指导和帮助。`;
+      // 生成描述文本
+      const descriptionText = `<div style="text-align: justify; font-weight: 500; font-size: 15px; color: #2463ff;">说明：</div>根据全国正常人SCL-90常模（N=1388，1-5级评分，国内医院常用标准），当测试总分超过160分或阳性项目数超过43项时，可能存在一定的心理或情绪压力。<span style="color:#2463ff">您的测试总分为${overall_results.总分.A}分，阳性项目数为${overall_results.阳性项目数.A}项，综合结果显示您${overall_desc}，总体评估为${overall_flag}。按总症状指数，目前的测试评级为${overall_results.总症状指数.C}。</span>需要说明的是，SCL-90量表是一种辅助筛查工具，结果仅供参考，不能替代专业的心理或医学诊断。如有需要，可进一步咨询专业人士以获得更具体的指导和帮助。`;
 
-			td.innerHTML = descriptionText;
-			descriptionRow.appendChild(td);
-			tbody.appendChild(descriptionRow);
+      td.innerHTML = descriptionText;
+      descriptionRow.appendChild(td);
+      tbody.appendChild(descriptionRow);
 
-			table.appendChild(tbody);
-			container.appendChild(table);
-		}
+      table.appendChild(tbody);
+      container.appendChild(table);
+    }
 
-		function renderFactorTable(factor_results) {
-			const container = document.getElementById('factorTableContainer');
-			container.innerHTML = ''; // 清空
+    function renderFactorTable(factor_results) {
+      const container = document.getElementById('factorTableContainer');
+      container.innerHTML = ''; // 清空
 
-			const table = document.createElement('table');
-			table.className = 'table';
+      const table = document.createElement('table');
+      table.className = 'table';
 
-			// 表头
-			const thead = document.createElement('thead');
-			const headerRow = document.createElement('tr');
+      // 表头
+      const thead = document.createElement('thead');
+      const headerRow = document.createElement('tr');
 
-			['因子', '总分', '均分', '判定', 'M±SD'].forEach(text => {
-				const th = document.createElement('th');
-				//th.style.min-width=50px;
-				th.textContent = text;
-				headerRow.appendChild(th);
-			});
-			thead.appendChild(headerRow);
-			table.appendChild(thead);
+      ['因子', '总分', '均分', '判定', 'M±SD'].forEach(text => {
+        const th = document.createElement('th');
+        //th.style.min-width=50px;
+        th.textContent = text;
+        headerRow.appendChild(th);
+      });
+      thead.appendChild(headerRow);
+      table.appendChild(thead);
 
-			// 表体
-			const tbody = document.createElement('tbody');
-			for (const name in factor_results) {
-				const row = document.createElement('tr');
-				const data = factor_results[name];
-				[name, data["总分"], data["均分"], data["判定"], data["M±SD"]].forEach((text, index) => {
-					const td = document.createElement('td');
-					td.textContent = text;
-					if (index === 3){
-						if (text === "-")
-							;
-						else if (text === "正常")
-							td.classList.add("green");
-						else
-							td.classList.add("red");
-					}	
-					row.appendChild(td);
-				});
-				tbody.appendChild(row);
-			}
-			// 添加描述行
-			const descriptionRow = document.createElement('tr');
-			descriptionRow.className = 'note-row';
-			const td = document.createElement('td');
-			td.colSpan = 5;  // 跨越所有列
+      // 表体
+      const tbody = document.createElement('tbody');
+      for (const name in factor_results) {
+        const row = document.createElement('tr');
+        const data = factor_results[name];
+        [name, data["总分"], data["均分"], data["判定"], data["M±SD"]].forEach((text, index) => {
+          const td = document.createElement('td');
+          td.textContent = text;
+          if (index === 3){
+            if (text === "-")
+              ;
+            else if (text === "正常")
+              td.classList.add("green");
+            else
+              td.classList.add("red");
+          }  
+          row.appendChild(td);
+        });
+        tbody.appendChild(row);
+      }
+      // 添加描述行
+      const descriptionRow = document.createElement('tr');
+      descriptionRow.className = 'note-row';
+      const td = document.createElement('td');
+      td.colSpan = 5;  // 跨越所有列
 
-			// 生成描述文本
-			const descriptionText = `<div style="text-align: justify; font-weight: 500; font-size: 15px; color: #2463ff;">说明：</div>根据全国正常人SCL-90常模（N=1388，1-5级评分，国内医院常用标准），每个因子均分数值范围为1~5，参考结果是以因子均分得到。如果因子均分超过因子常模(M+SD,平均分+标准差)即表示筛查异常。由于量表只是辅助筛查工具，因此量表测试结果仅供参考。`;
+      // 生成描述文本
+      const descriptionText = `<div style="text-align: justify; font-weight: 500; font-size: 15px; color: #2463ff;">说明：</div>根据全国正常人SCL-90常模（N=1388，1-5级评分，国内医院常用标准），每个因子均分数值范围为1~5，参考结果是以因子均分得到。如果因子均分超过因子常模(M+SD,平均分+标准差)即表示筛查异常。由于量表只是辅助筛查工具，因此量表测试结果仅供参考。`;
 
-			td.innerHTML = descriptionText;
-			descriptionRow.appendChild(td);
-			tbody.appendChild(descriptionRow);
-			table.appendChild(tbody);
+      td.innerHTML = descriptionText;
+      descriptionRow.appendChild(td);
+      tbody.appendChild(descriptionRow);
+      table.appendChild(tbody);
 
-			container.appendChild(table);
-		}
+      container.appendChild(table);
+    }
 
-		function renderFactorDesc(factor_results, factor_desc) {
-			const container = document.getElementById('factorDescContainer');
-			container.innerHTML = ''; // 清空
+    function renderFactorDesc(factor_results, factor_desc) {
+      const container = document.getElementById('factorDescContainer');
+      container.innerHTML = ''; // 清空
 
-			const table = document.createElement('table');
-			table.className = 'table';
+      const table = document.createElement('table');
+      table.className = 'table';
 
-			// 表头
-			const thead = document.createElement('thead');
-			const headerRow = document.createElement('tr');
+      // 表头
+      const thead = document.createElement('thead');
+      const headerRow = document.createElement('tr');
 
-			['因子', '说明'].forEach(text => {
-				const th = document.createElement('th');
-				th.textContent = text;
-				headerRow.appendChild(th);
-			});
-			thead.appendChild(headerRow);
-			table.appendChild(thead);
+      ['因子', '说明'].forEach(text => {
+        const th = document.createElement('th');
+        th.textContent = text;
+        headerRow.appendChild(th);
+      });
+      thead.appendChild(headerRow);
+      table.appendChild(thead);
 
-			// 表体
-			const tbody = document.createElement('tbody');
-			let descs = "";
-			for (const name in factor_results) {
-				const row = document.createElement('tr');
+      // 表体
+      const tbody = document.createElement('tbody');
+      let descs = "";
+      for (const name in factor_results) {
+        const row = document.createElement('tr');
 
-				const data = factor_results[name];
-				descs = `<span style="color:#2463ff">你的得分为 ${data["总分"]}。</span>${factor_desc[name]}`;
-				[name, descs].forEach((text,index) => {
-					const td = document.createElement('td');
-					td.innerHTML = text;
-					if (index === 1)
-						td.classList.add("desc-cell");
-					row.appendChild(td);
-				});
-				tbody.appendChild(row);
-			}
-			table.appendChild(tbody);
+        const data = factor_results[name];
+        descs = `<span style="color:#2463ff">你的得分为 ${data["总分"]}。</span>${factor_desc[name]}`;
+        [name, descs].forEach((text,index) => {
+          const td = document.createElement('td');
+          td.innerHTML = text;
+          if (index === 1)
+            td.classList.add("desc-cell");
+          row.appendChild(td);
+        });
+        tbody.appendChild(row);
+      }
+      table.appendChild(tbody);
 
-			container.appendChild(table);
-		}
+      container.appendChild(table);
+    }
 
-		function showResult() {
-			const filledAnswers = answers.map(v => v === null ? 0 : v);
-			document.querySelector('.card').style.display = 'none';
+    function showResult() {
+      const filledAnswers = answers.map(v => v === null ? 0 : v);
+      document.querySelector('.card').style.display = 'none';
 
-			resultCard.style.display = 'block';
-			loadingBarContainer.style.display = 'block';
-			resultContainer.style.display = "none"
+      resultCard.style.display = 'block';
+      loadingBarContainer.style.display = 'block';
+      resultContainer.style.display = "none"
 
-			// 模拟进度条缓慢增长
-			let progress = 0;
-			const interval = setInterval(() => {
-				progress += Math.random() * 20;
-				if (progress > 90) progress = 90;
-				loadingBar.style.width = progress + "%";
-			}, 500);
+      // 模拟进度条缓慢增长
+      let progress = 0;
+      const interval = setInterval(() => {
+        progress += Math.random() * 20;
+        if (progress > 90) progress = 90;
+        loadingBar.style.width = progress + "%";
+      }, 500);
 
-			fetch("/api/scl90", {
-				method: "POST",
-				headers: {"Content-Type": "application/json"},
-				body: JSON.stringify({ filledAnswers })
-			})
-			.then(res => res.json())
-			.then(data => {
-				console.log(data);
-				clearInterval(interval);
-				loadingBar.style.width = "100%";
-				setTimeout(() => {
-					loadingBarContainer.style.display = "none";
-					loadingBar.style.width = "0%";
-					resultContainer.style.display = "block";
-					renderOverallTable(data.overall_results, data.overall_desc, data.overall_flag);
-					renderFactorTable(data.factor_results);
-					renderFactorDesc(data.factor_results, data.factor_desc);
-				}, 500);
-			})
-			.catch(err => {
-				clearInterval(interval);
-				loadingBarContainer.style.display = "none";
-				console.error(err);
-			});
-		}
+      fetch("/api/scl90", {
+        method: "POST",
+        headers: {"Content-Type": "application/json"},
+        body: JSON.stringify({ filledAnswers })
+      })
+      .then(res => res.json())
+      .then(data => {
+        console.log(data);
+        clearInterval(interval);
+        loadingBar.style.width = "100%";
+        setTimeout(() => {
+          loadingBarContainer.style.display = "none";
+          loadingBar.style.width = "0%";
+          resultContainer.style.display = "block";
+          renderOverallTable(data.overall_results, data.overall_desc, data.overall_flag);
+          renderFactorTable(data.factor_results);
+          renderFactorDesc(data.factor_results, data.factor_desc);
+        }, 500);
+      })
+      .catch(err => {
+        clearInterval(interval);
+        loadingBarContainer.style.display = "none";
+        console.error(err);
+      });
+    }
 
-		function restart(){
-			// reset
-			answers = new Array(QUESTIONS.length).fill(null);
-			idx = 0;
-			resultCard.style.display = 'none';
-			document.querySelector('.card').style.display = 'block';
-			renderQuestion(0);
-		}
+    function restart(){
+      // reset
+      answers = new Array(QUESTIONS.length).fill(null);
+      idx = 0;
+      resultCard.style.display = 'none';
+      document.querySelector('.card').style.display = 'block';
+      renderQuestion(0);
+    }
 
-		prevBtn.addEventListener('click', goPrev);
-		nextBtn.addEventListener('click', goNext);
-		restartBtn.addEventListener('click', restart);
+    prevBtn.addEventListener('click', goPrev);
+    nextBtn.addEventListener('click', goNext);
+    restartBtn.addEventListener('click', restart);
 
-		renderQuestion(0);
-	</script>
+    renderQuestion(0);
+  </script>
 </body>
 </html>
