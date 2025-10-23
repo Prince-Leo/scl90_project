@@ -291,10 +291,16 @@
         font-size: 13.5px;
       }
       footer {
-        font-size: 12px;
         text-align: center;
-        color: var(--text-muted);
-        margin-top: 20px;
+        color: #a9b5d2;
+        font-size: 13px;
+        margin-top: 24px;
+        line-height: 1.6;
+        border-top: 1px solid rgba(255, 255, 255, 0.08);
+        padding-top: 12px;
+      }
+      footer p {
+        margin: 4px 0;
       }
     </style>
   </head>
@@ -321,7 +327,7 @@
         </div>
       </div>
       <div id="resultCard" class="card" style="display: none">
-        <h2 style="text-align: center; color: #7ac7ff; margin-bottom: 8px">
+        <h2 style="text-align: center; color: #7ac7ff; margin-bottom: 8px; font-size: 20px;">
           SCL-90 量表测评结果报告
         </h2>
         <div id="overallTableContainer"></div>
@@ -331,7 +337,12 @@
           <button id="restart" class="btn primary">重新作答</button>
         </div>
       </div>
-      <footer>版本：科技感主题 1.1</footer>
+      <footer>
+        <p>© 2025 心理测评系统 SCL-90 | 技术支持：Jakestar Studio</p>
+        <p style="font-size: 12px; opacity: 0.8">
+          本工具仅用于心理自评与教育科研，不构成任何医疗诊断依据。
+        </p>
+      </footer>
     </div>
     <script>
       const QUESTIONS = [
