@@ -242,6 +242,13 @@
           background 0.3s ease,
           color 0.3s ease;
       }
+      tbody td:first-child {
+        color: #a8c8ff;
+        font-weight: 600;
+        text-shadow: 0 0 6px rgba(36, 99, 255, 0.3);
+        background: rgba(36, 99, 255, 0.08);
+        border-right: 1px solid rgba(255, 255, 255, 0.06);
+      }
       tbody tr:hover {
         background: rgba(36, 99, 255, 0.12);
         box-shadow: 0 0 8px rgba(36, 99, 255, 0.25) inset;
@@ -262,6 +269,12 @@
         color: #c9d6ff;
         font-size: 13.5px;
         padding-top: 14px;
+      }
+      tr.note-row td:first-child {
+        background: transparent;
+        color: #c9d6ff;
+        text-shadow: none;
+        border-right: none;
       }
       h3.section-title {
         font-size: 17px;
@@ -327,7 +340,14 @@
         </div>
       </div>
       <div id="resultCard" class="card" style="display: none">
-        <h2 style="text-align: center; color: #7ac7ff; margin-bottom: 8px; font-size: 20px;">
+        <h2
+          style="
+            text-align: center;
+            color: #7ac7ff;
+            margin-bottom: 8px;
+            font-size: 20px;
+          "
+        >
           SCL-90 量表测评结果报告
         </h2>
         <div id="overallTableContainer"></div>
