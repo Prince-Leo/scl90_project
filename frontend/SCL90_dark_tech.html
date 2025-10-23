@@ -209,36 +209,53 @@
         padding: 6px 12px;
       }
       table {
-        width: 100%;
-        border-collapse: separate;
-        border-spacing: 0;
-        margin-top: 10px;
-        font-size: 14px;
-      }
-      thead th {
-        background: rgba(36, 99, 255, 0.25);
-        color: #b5cdff;
-        padding: 10px;
-        font-weight: 600;
-        border-bottom: 2px solid rgba(255, 255, 255, 0.08);
-      }
-      tbody td {
-        padding: 10px;
-        text-align: center;
-        color: #eaf0ff;
-        border-bottom: 1px solid rgba(255, 255, 255, 0.06);
-      }
-      tbody tr:hover {
-        background: rgba(36, 99, 255, 0.15);
-      }
-      td.red {
-        color: #ff88a2;
-        font-weight: 600;
-      }
-      td.green {
-        color: #82ffb0;
-        font-weight: 600;
-      }
+  width: 100%;
+  border-collapse: separate;
+  border-spacing: 0;
+  margin-top: 10px;
+  font-size: 14px;
+  background: rgba(255, 255, 255, 0.03);
+  border-radius: 12px;
+  overflow: hidden;
+  box-shadow: 0 0 10px rgba(36, 99, 255, 0.15);
+}
+thead th {
+  background: rgba(36, 99, 255, 0.25);
+  color: #a8c8ff;
+  padding: 10px;
+  font-weight: 600;
+  text-shadow: 0 0 6px rgba(36, 99, 255, 0.3);
+  border-bottom: 2px solid rgba(255, 255, 255, 0.08);
+}
+tbody td {
+  padding: 10px;
+  text-align: center;
+  color: #eaf0ff;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+  transition: background 0.3s ease, color 0.3s ease;
+}
+tbody tr:hover {
+  background: rgba(36, 99, 255, 0.12);
+  box-shadow: 0 0 8px rgba(36, 99, 255, 0.25) inset;
+}
+td.red {
+  color: #ff88a2 !important;
+  font-weight: 600;
+  text-shadow: 0 0 8px rgba(255, 136, 162, 0.4);
+}
+td.green {
+  color: #82ffb0 !important;
+  font-weight: 600;
+  text-shadow: 0 0 8px rgba(130, 255, 176, 0.4);
+}
+tr.note-row td {
+  text-align: justify;
+  line-height: 1.7;
+  color: #c9d6ff;
+  font-size: 13.5px;
+  padding-top: 14px;
+}
+
       footer {
         font-size: 12px;
         text-align: center;
@@ -440,6 +457,149 @@
           renderQuestion(idx);
         }
       }
+      function renderOverallTable(overall_results, overall_desc, overall_flag) {
+  const container = document.getElementById('overallTableContainer');
+  container.innerHTML = '';
+
+  const table = document.createElement('table');
+  table.className = 'table';
+
+  // 表头
+  const thead = document.createElement('thead');
+  const headerRow = document.createElement('tr');
+  ['项目', '得分', '参考', '结果'].forEach((text) => {
+    const th = document.createElement('th');
+    th.textContent = text;
+    headerRow.appendChild(th);
+  });
+  thead.appendChild(headerRow);
+  table.appendChild(thead);
+
+  // 表体
+  const tbody = document.createElement('tbody');
+  for (const name in overall_results) {
+    const row = document.createElement('tr');
+    const data = overall_results[name];
+    [name, data['A'], data['B'], data['C']].forEach((text, index) => {
+      const td = document.createElement('td');
+      td.textContent = text;
+      if (index === 3) {
+        if (text === '阴性' || text === '正常') td.classList.add('green');
+        else td.classList.add('red');
+      }
+      row.appendChild(td);
+    });
+    tbody.appendChild(row);
+  }
+
+  // 描述行
+  const descRow = document.createElement('tr');
+  descRow.className = 'note-row';
+  const descTd = document.createElement('td');
+  descTd.colSpan = 4;
+  descTd.innerHTML = `
+    <div>
+      <div style="font-weight:600; color:#00b7ff; margin-bottom:6px;">说明：</div>
+      根据全国正常人SCL-90常模（N=1388，1-5级评分，国内医院常用标准），当测试总分超过160分或阳性项目数超过43项时，可能存在一定的心理或情绪压力。
+      <span style="color:#7ac7ff;">您的测试总分为 ${overall_results.总分.A} 分，阳性项目数为 ${overall_results.阳性项目数.A} 项，
+      综合结果显示您 ${overall_desc}，总体评估为 ${overall_flag}。按总症状指数，目前的测试评级为 ${overall_results.总症状指数.C}。</span>
+      <br>需要说明的是，SCL-90量表是一种辅助筛查工具，结果仅供参考，不能替代专业的心理或医学诊断。
+    </div>`;
+  descRow.appendChild(descTd);
+  tbody.appendChild(descRow);
+
+  table.appendChild(tbody);
+  container.appendChild(table);
+}
+
+function renderFactorTable(factor_results) {
+  const container = document.getElementById('factorTableContainer');
+  container.innerHTML = '';
+
+  const table = document.createElement('table');
+  table.className = 'table';
+
+  const thead = document.createElement('thead');
+  const headerRow = document.createElement('tr');
+  ['因子', '总分', '均分', '判定', 'M±SD'].forEach((text) => {
+    const th = document.createElement('th');
+    th.textContent = text;
+    headerRow.appendChild(th);
+  });
+  thead.appendChild(headerRow);
+  table.appendChild(thead);
+
+  const tbody = document.createElement('tbody');
+  for (const name in factor_results) {
+    const row = document.createElement('tr');
+    const data = factor_results[name];
+    [name, data['总分'], data['均分'], data['判定'], data['M±SD']].forEach(
+      (text, index) => {
+        const td = document.createElement('td');
+        td.textContent = text;
+        if (index === 3) {
+          if (text === '正常') td.classList.add('green');
+          else if (text !== '-') td.classList.add('red');
+        }
+        row.appendChild(td);
+      }
+    );
+    tbody.appendChild(row);
+  }
+
+  const descRow = document.createElement('tr');
+  descRow.className = 'note-row';
+  const descTd = document.createElement('td');
+  descTd.colSpan = 5;
+  descTd.innerHTML = `
+    <div>
+      <div style="font-weight:600; color:#00b7ff; margin-bottom:6px;">说明：</div>
+      根据全国正常人SCL-90常模（N=1388，1-5级评分，国内医院常用标准），每个因子均分数值范围为 1~5。
+      若均分超过常模(M+SD, 平均分+标准差)，即提示筛查异常。
+      <br>量表结果仅供参考，不构成诊断依据。
+    </div>`;
+  descRow.appendChild(descTd);
+  tbody.appendChild(descRow);
+
+  table.appendChild(tbody);
+  container.appendChild(table);
+}
+
+function renderFactorDesc(factor_results, factor_desc) {
+  const container = document.getElementById('factorDescContainer');
+  container.innerHTML = '';
+
+  const table = document.createElement('table');
+  table.className = 'table';
+
+  const thead = document.createElement('thead');
+  const headerRow = document.createElement('tr');
+  ['因子', '说明'].forEach((text) => {
+    const th = document.createElement('th');
+    th.textContent = text;
+    headerRow.appendChild(th);
+  });
+  thead.appendChild(headerRow);
+  table.appendChild(thead);
+
+  const tbody = document.createElement('tbody');
+  for (const name in factor_results) {
+    const row = document.createElement('tr');
+    const data = factor_results[name];
+    const td1 = document.createElement('td');
+    td1.textContent = name;
+    const td2 = document.createElement('td');
+    td2.innerHTML = `<span style="color:#7ac7ff;font-weight:600;">你的得分为 ${data['总分']}。</span> ${factor_desc[name]}`;
+    td2.classList.add('desc-cell');
+    row.appendChild(td1);
+    row.appendChild(td2);
+    tbody.appendChild(row);
+  }
+
+  table.appendChild(tbody);
+  container.appendChild(table);
+}
+
       function showResult() {
         mainCard.style.display = "none";
         resultCard.style.display = "block";
@@ -451,10 +611,16 @@
         })
           .then((res) => res.json())
           .then((data) => {
-            document.getElementById("overallTableContainer").innerText = JSON.stringify(data, null, 2);
+            renderOverallTable(
+                data.overall_results,
+                data.overall_desc,
+                data.overall_flag
+              )
+              renderFactorTable(data.factor_results)
+              renderFactorDesc(data.factor_results, data.factor_desc)
           })
           .catch((e) => {
-            document.getElementById("overallTableContainer").innerText = "请求失败：" + e.message;
+            console.error(err)
           });
       }
       function restart() {
