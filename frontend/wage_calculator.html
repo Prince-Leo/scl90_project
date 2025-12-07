@@ -1,0 +1,362 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>工资计算器</title>
+    <style>
+        body {
+            font-family: 'Arial', sans-serif;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+        }
+        .container {
+            background: white;
+            border-radius: 15px;
+            padding: 30px;
+            box-shadow: 0 15px 35px rgba(0,0,0,0.1);
+        }
+        h1 {
+            text-align: center;
+            color: #333;
+            margin-bottom: 30px;
+            text-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        .input-group {
+            margin-bottom: 15px;
+        }
+        label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: bold;
+            color: #555;
+        }
+        input {
+            width: 100%;
+            padding: 10px;
+            border: 2px solid #ddd;
+            border-radius: 8px;
+            font-size: 16px;
+            transition: border-color 0.3s;
+        }
+        input:focus {
+            outline: none;
+            border-color: #667eea;
+        }
+        .option-group {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+        button {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            padding: 12px 30px;
+            border-radius: 25px;
+            font-size: 16px;
+            cursor: pointer;
+            transition: transform 0.2s;
+            width: 100%;
+            margin-bottom: 20px;
+        }
+        button:hover {
+            transform: translateY(-2px);
+        }
+        .result {
+            background: #f8f9fa;
+            border-radius: 10px;
+            padding: 20px;
+            margin-top: 20px;
+            border-left: 5px solid #28a745;
+        }
+        .result-section {
+            margin-bottom: 15px;
+        }
+        .result-section h3 {
+            color: #333;
+            margin-bottom: 8px;
+            border-bottom: 2px solid #667eea;
+            padding-bottom: 3px;
+        }
+        .result-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 10px;
+        }
+        .result-item {
+            background: white;
+            padding: 10px;
+            border-radius: 5px;
+            border: 1px solid #e9ecef;
+        }
+        .result-item strong {
+            color: #495057;
+        }
+        .net-salary {
+            font-size: 24px;
+            color: #28a745;
+            text-align: center;
+            margin-top: 20px;
+            padding: 15px;
+            background: linear-gradient(135deg, #d4edda 0%, #c3e6cb 100%);
+            border-radius: 10px;
+            border: 2px solid #28a745;
+        }
+        .rate-inputs {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 10px;
+        }
+        .rate-inputs div {
+            display: flex;
+            flex-direction: column;
+        }
+        @media (max-width: 600px) {
+            .result-grid, .rate-inputs {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🧮 工资计算器</h1>
+
+        <div class="input-group">
+            <label for="baseSalary">基础工资（元）</label>
+            <input type="number" id="baseSalary" placeholder="请输入基础工资" value="10000">
+        </div>
+
+        <div class="input-group">
+            <label for="bonus">奖金（元）</label>
+            <input type="number" id="bonus" placeholder="请输入奖金" value="0">
+        </div>
+
+        <div class="input-group">
+            <label for="overtimeHours">加班时长（小时）</label>
+            <input type="number" id="overtimeHours" placeholder="请输入加班小时数" value="0">
+        </div>
+
+        <div class="input-group">
+            <label for="overtimeRate">加班倍率</label>
+            <input type="number" id="overtimeRate" placeholder="请输入加班倍率" value="1.5" step="0.1">
+        </div>
+
+        <div class="input-group">
+            <label for="insuranceBase">社保缴费基数（元）</label>
+            <input type="number" id="insuranceBase" placeholder="社保基数，默认等于基本工资">
+        </div>
+
+        <div class="input-group">
+            <h3 style="margin-bottom: 10px; color: #333;">🏦 个人五险一金比例设置</h3>
+            <div class="rate-inputs">
+                <div>
+                    <label for="personalPension">养老保险（个人比例%）</label>
+                    <input type="number" id="personalPension" value="8" step="0.1">
+                </div>
+                <div>
+                    <label for="personalMedical">医疗保险（个人%）</label>
+                    <input type="number" id="personalMedical" value="2" step="0.1">
+                </div>
+                <div>
+                    <label for="personalUnemployment">失业保险（个人%）</label>
+                    <input type="number" id="personalUnemployment" value="0.4" step="0.1">
+                </div>
+                <div>
+                    <label for="personalInjury">工伤保险（个人%）</label>
+                    <input type="number" id="personalInjury" value="0" step="0.1">
+                </div>
+                <div>
+                    <label for="personalHousing">住房公积金（个人%）</label>
+                    <input type="number" id="personalHousing" value="6" step="0.1">
+                </div>
+            </div>
+        </div>
+
+        <div class="input-group">
+            <h3 style="margin-bottom: 10px; color: #333;">🏢 企业五险一金比例设置</h3>
+            <div class="rate-inputs">
+                <div>
+                    <label for="companyPension">养老保险（企业比例%）</label>
+                    <input type="number" id="companyPension" value="16" step="0.1">
+                </div>
+                <div>
+                    <label for="companyMedical">医疗保险（企业%）</label>
+                    <input type="number" id="companyMedical" value="7" step="0.1">
+                </div>
+                <div>
+                    <label for="companyUnemployment">失业保险（企业%）</label>
+                    <input type="number" id="companyUnemployment" value="0.6" step="0.1">
+                </div>
+                <div>
+                    <label for="companyInjury">工伤保险（企业%）</label>
+                    <input type="number" id="companyInjury" value="0.3" step="0.1">
+                </div>
+                <div>
+                    <label for="companyHousing">住房公积金（企业%）</label>
+                    <input type="number" id="companyHousing" value="6" step="0.1">
+                </div>
+            </div>
+        </div>
+
+        <button onclick="calculateWage()">计算工资</button>
+
+        <div id="resultContainer" class="result" style="display: none;">
+            <div class="result-section">
+                <h3>📊 工资构成</h3>
+                <div class="result-grid">
+                    <div class="result-item">基础工资: <strong id="displayBasic">0</strong>元</div>
+                    <div class="result-item">加班费: <strong id="displayOvertime">0</strong>元</div>
+                    <div class="result-item">奖金: <strong id="displayBonus">0</strong>元</div>
+                    <div class="result-item">月总工资: <strong id="displayTotalSalary">0</strong>元</div>
+                </div>
+            </div>
+
+            <div class="result-section">
+                <h3>🏦 五险一金（个人缴纳）</h3>
+                <div class="result-grid">
+                    <div class="result-item">养老保险: <strong id="displayPension">0</strong>元</div>
+                    <div class="result-item">医疗保险: <strong id="displayMedical">0</strong>元</div>
+                    <div class="result-item">失业保险: <strong id="displayUnemployment">0</strong>元</div>
+                    <div class="result-item">住房公积金: <strong id="displayHousing">0</strong>元</div>
+                    <div class="result-item">工伤保险: <strong>0</strong>元</div>
+                    <div class="result-item"><strong>个人总缴费:</strong> <strong id="displayPersonalTotal">0</strong>元</div>
+                </div>
+            </div>
+
+            <div class="result-section">
+                <h3>🏢 五险一金（企业缴纳）</h3>
+                <div class="result-item"><strong>企业总缴费:</strong> <strong id="displayCompanyTotal">0</strong>元</div>
+            </div>
+
+            <div class="result-section">
+                <h3>💼 个税计算</h3>
+                <div class="result-grid">
+                    <div class="result-item">应纳税所得额: <strong id="displayTaxableIncome">0</strong>元</div>
+                    <div class="result-item">个税: <strong id="displayIncomeTax">0</strong>元</div>
+                </div>
+            </div>
+
+            <div class="net-salary">
+                实发工资: <strong id="displayNetSalary">0</strong>元
+            </div>
+        </div>
+    </div>
+
+    <script>
+    // 初始化社保基数
+    function init() {
+        setBaseSalary();
+    }
+
+    function setBaseSalary() {
+        const baseSalary = document.getElementById('baseSalary').value || 10000;
+        document.getElementById('insuranceBase').value = baseSalary;
+    }
+
+    function calculateWage() {
+        const baseSalary = parseFloat(document.getElementById('baseSalary').value) || 10000;
+        const bonus = parseFloat(document.getElementById('bonus').value) || 0;
+        const overtimeHours = parseFloat(document.getElementById('overtimeHours').value) || 0;
+        const overtimeRate = parseFloat(document.getElementById('overtimeRate').value) || 1.5;
+
+        // 月工资 = 基础工资 + 加班费 + 奖金
+        const hourlyRate = baseSalary / (20 * 8); // 每月20工作日，每天8小时
+        const overtimePay = overtimeHours * hourlyRate * overtimeRate;
+        const totalMonthlySalary = baseSalary + overtimePay + bonus;
+
+        // 获取个人社保公积金比例
+        const personalRates = {
+            pension: parseFloat(document.getElementById('personalPension').value) / 100,
+            unemployment: parseFloat(document.getElementById('personalUnemployment').value) / 100,
+            injury: parseFloat(document.getElementById('personalInjury').value) / 100,
+            medical: parseFloat(document.getElementById('personalMedical').value) / 100,
+            housing_fund: parseFloat(document.getElementById('personalHousing').value) / 100
+        };
+
+        // 获取企业社保公积金比例
+        const companyRates = {
+            pension: parseFloat(document.getElementById('companyPension').value) / 100,
+            unemployment: parseFloat(document.getElementById('companyUnemployment').value) / 100,
+            injury: parseFloat(document.getElementById('companyInjury').value) / 100,
+            medical: parseFloat(document.getElementById('companyMedical').value) / 100,
+            housing_fund: parseFloat(document.getElementById('companyHousing').value) / 100
+        };
+
+        // 社保公积金计算
+        const insuranceBase = parseFloat(document.getElementById('insuranceBase').value) || baseSalary;
+        const personalInsurance = {
+            pension: insuranceBase * personalRates.pension,
+            unemployment: insuranceBase * personalRates.unemployment,
+            injury: insuranceBase * personalRates.injury,
+            medical: insuranceBase * personalRates.medical,
+            housing_fund: insuranceBase * personalRates.housing_fund,
+            total: insuranceBase * (personalRates.pension + personalRates.unemployment + personalRates.injury + personalRates.medical + personalRates.housing_fund)
+        };
+
+        const companyInsuranceTotal = insuranceBase * (companyRates.pension + companyRates.unemployment + companyRates.injury + companyRates.medical + companyRates.housing_fund);
+
+        // 税前工资
+        const preTaxSalary = totalMonthlySalary;
+
+        // 应纳税所得额 = 税前工资 - 五险一金个人部分 - 5000免税额
+        const taxableIncome = preTaxSalary - personalInsurance.total - 5000;
+
+        // 个税计算
+        const incomeTax = calculateIndividualIncomeTax(taxableIncome);
+
+        // 实发工资
+        const netSalary = preTaxSalary - personalInsurance.total - incomeTax;
+
+        // 更新显示
+        updateResults(baseSalary, overtimePay, bonus, totalMonthlySalary,
+                     personalInsurance, companyInsuranceTotal,
+                     taxableIncome, incomeTax, netSalary);
+
+        document.getElementById('resultContainer').style.display = 'block';
+    }
+
+    // 个税计算函数
+    function calculateIndividualIncomeTax(taxableIncome) {
+        if (taxableIncome <= 0) return 0;
+        if (taxableIncome <= 3000) return taxableIncome * 0.03;
+        if (taxableIncome <= 12000) return taxableIncome * 0.10 - 210;
+        if (taxableIncome <= 25000) return taxableIncome * 0.20 - 1410;
+        if (taxableIncome <= 35000) return taxableIncome * 0.25 - 2660;
+        if (taxableIncome <= 55000) return taxableIncome * 0.30 - 4410;
+        if (taxableIncome <= 80000) return taxableIncome * 0.35 - 7160;
+        return taxableIncome * 0.45 - 15160;
+    }
+
+    // 页面加载时初始化
+    window.onload = init;
+    document.getElementById('baseSalary').addEventListener('input', setBaseSalary);
+
+    function updateResults(baseSalary, overtimePay, bonus, totalMonthlySalary,
+                          personalInsurance, companyInsuranceTotal,
+                          taxableIncome, incomeTax, netSalary) {
+        document.getElementById('displayBasic').textContent = baseSalary.toFixed(2);
+        document.getElementById('displayOvertime').textContent = overtimePay.toFixed(2);
+        document.getElementById('displayBonus').textContent = bonus.toFixed(2);
+        document.getElementById('displayTotalSalary').textContent = totalMonthlySalary.toFixed(2);
+
+        document.getElementById('displayPension').textContent = personalInsurance.pension.toFixed(2);
+        document.getElementById('displayMedical').textContent = personalInsurance.medical.toFixed(2);
+        document.getElementById('displayUnemployment').textContent = personalInsurance.unemployment.toFixed(2);
+        document.getElementById('displayHousing').textContent = personalInsurance.housing_fund.toFixed(2);
+        document.getElementById('displayPersonalTotal').textContent = personalInsurance.total.toFixed(2);
+
+        document.getElementById('displayCompanyTotal').textContent = companyInsuranceTotal.toFixed(2);
+
+        document.getElementById('displayTaxableIncome').textContent = taxableIncome.toFixed(2);
+        document.getElementById('displayIncomeTax').textContent = incomeTax.toFixed(2);
+
+        document.getElementById('displayNetSalary').textContent = netSalary.toFixed(2);
+    }
+    </script>
+</body>
+</html>
